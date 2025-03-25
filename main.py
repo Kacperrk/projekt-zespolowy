@@ -1,7 +1,4 @@
 import sys
-
-
-
 import random
 import math
 from itertools import combinations
