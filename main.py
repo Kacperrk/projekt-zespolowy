@@ -226,17 +226,34 @@ class KomiwojazerApp(QWidget):
                 j = random.randint(0, len(trasa) - 1)
                 trasa[i], trasa[j] = trasa[j], trasa[i]
 
-    def znajdz_najlepsza_trase(self, pokolenia=100, populacja_rozmiar=50):
+
+    def znajdz_najlepsza_trase(self, pokolenia=500, populacja_rozmiar=200):
         miasta_lista = list(self.miasta.keys())
         if len(miasta_lista) < 2:
-            QMessageBox.warning(self, "Uwaga", "Potrzebujesz co najmniej 2 miast.")
+            QMessageBox.warning(self, "Uwaga", "Potrzebujesz co najmniej 2 miast")
             return
 
         populacja = [random.sample(miasta_lista, len(miasta_lista)) for _ in range(populacja_rozmiar)]
 
-        for _ in range(pokolenia):
+        najlepszy_dystans = float('inf')
+        stagnacja_licznik = 0
+        max_stagnacja = 50
+
+        for epoka in range(pokolenia):
             populacja.sort(key=lambda trasa: self.dystans(trasa))
             nowa_populacja = populacja[:10]
+
+            obecny_dystans = self.dystans(nowa_populacja[0])
+
+            if abs(najlepszy_dystans - obecny_dystans) < 0.1:
+                stagnacja_licznik += 1
+            else:
+                stagnacja_licznik = 0
+                najlepszy_dystans = obecny_dystans
+
+            if stagnacja_licznik >= max_stagnacja:
+                print(f"Zakończono po {epoka + 1} pokoleniach z powodu stabilności rozwiązania")
+                break
 
             while len(nowa_populacja) < populacja_rozmiar:
                 rodzic1, rodzic2 = random.sample(populacja[:20], 2)
@@ -248,6 +265,7 @@ class KomiwojazerApp(QWidget):
 
         najlepsza = min(populacja, key=self.dystans)
         self.rysuj_mape(najlepsza)
+
 
     def rysuj_mape(self, najlepsza_trasa=None):
         self.ax.clear()
