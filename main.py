@@ -22,7 +22,6 @@ class KomiwojazerApp(QWidget):
         layout = QHBoxLayout()
         controls = QVBoxLayout()
 
-        # Pola do dodawania miasta
         self.nazwa_input = QLineEdit()
         self.x_input = QLineEdit()
         self.y_input = QLineEdit()
@@ -38,7 +37,6 @@ class KomiwojazerApp(QWidget):
         dodaj_btn.clicked.connect(self.dodaj_miasto)
         controls.addWidget(dodaj_btn)
 
-        # Pola do łączenia miast
         self.m1_input = QLineEdit()
         self.m2_input = QLineEdit()
         controls.addWidget(QLabel("Połącz miasta (podaj 2 nazwy):"))
@@ -53,6 +51,10 @@ class KomiwojazerApp(QWidget):
         polacz_wszystkie_btn.clicked.connect(self.polacz_wszystkie_miasta)
         controls.addWidget(polacz_wszystkie_btn)
 
+        wyczysc_miasta_btn = QPushButton("Wyczyść miasta")
+        wyczysc_miasta_btn.clicked.connect(self.wyczysc_miasta)
+        controls.addWidget(wyczysc_miasta_btn)
+
         wyczysc_btn = QPushButton("Wyczyść połączenia")
         wyczysc_btn.clicked.connect(self.wyczysc_polaczenia)
         controls.addWidget(wyczysc_btn)
@@ -65,7 +67,22 @@ class KomiwojazerApp(QWidget):
         znajdz_btn.clicked.connect(self.znajdz_najlepsza_trase)
         controls.addWidget(znajdz_btn)
 
-        # Matplotlib
+        eksport_miasta_btn = QPushButton("Eksportuj miasta do pliku")
+        eksport_miasta_btn.clicked.connect(self.eksportuj_miasta)
+        controls.addWidget(eksport_miasta_btn)
+
+        eksport_drogi_btn = QPushButton("Eksportuj drogi do pliku")
+        eksport_drogi_btn.clicked.connect(self.eksportuj_drogi)
+        controls.addWidget(eksport_drogi_btn)
+
+        wczytaj_miasta_btn = QPushButton("Wczytaj miasta z pliku")
+        wczytaj_miasta_btn.clicked.connect(self.wczytaj_miasta)
+        controls.addWidget(wczytaj_miasta_btn)
+
+        wczytaj_drogi_btn = QPushButton("Wczytaj drogi z pliku")
+        wczytaj_drogi_btn.clicked.connect(self.wczytaj_drogi)
+        controls.addWidget(wczytaj_drogi_btn)
+
         self.figure, self.ax = plt.subplots()
         self.canvas = FigureCanvas(self.figure)
 
@@ -122,6 +139,11 @@ class KomiwojazerApp(QWidget):
                 self.drogi.append((m1, m2))
         self.rysuj_mape()
 
+    def wyczysc_miasta(self):
+        self.drogi.clear()
+        self.miasta.clear()
+        self.rysuj_mape()
+
     def wyczysc_polaczenia(self):
         self.drogi.clear()
         self.rysuj_mape()
@@ -130,11 +152,57 @@ class KomiwojazerApp(QWidget):
         start_index = len(self.miasta) + 1
         for i in range(5):
             nazwa = f"Miasto{start_index + i}"
-            x = random.randint(0, 50)  # ⬅️ Przedział 0–50
+            x = random.randint(0, 50)
             y = random.randint(0, 50)
             self.miasta[nazwa] = (x, y)
-        self.drogi.clear()  # Wymuszone wyczyszczenie połączeń, jak wcześniej
+        self.drogi.clear()
         self.rysuj_mape()
+
+    def eksportuj_miasta(self):
+        try:
+            with open("miasta.txt", "w") as f:
+                for nazwa, (x, y) in self.miasta.items():
+                    f.write(f"{nazwa},{x},{y}\n")
+            QMessageBox.information(self, "Eksport", "Miasta zapisane do pliku miasta.txt")
+        except Exception as e:
+            QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać miast:\n{str(e)}")
+
+    def eksportuj_drogi(self):
+        try:
+            with open("drogi.txt", "w") as f:
+                for m1, m2 in self.drogi:
+                    f.write(f"{m1},{m2}\n")
+            QMessageBox.information(self, "Eksport", "Drogi zapisane do pliku drogi.txt")
+        except Exception as e:
+            QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać dróg:\n{str(e)}")
+
+    def wczytaj_miasta(self):
+        try:
+            with open("miasta.txt", "r") as f:
+                self.miasta.clear()
+                for line in f:
+                    parts = line.strip().split(",")
+                    if len(parts) == 3:
+                        nazwa, x, y = parts
+                        self.miasta[nazwa] = (float(x), float(y))
+            self.drogi.clear()
+            self.rysuj_mape()
+            QMessageBox.information(self, "Import", "Miasta wczytane z pliku miasta.txt")
+        except Exception as e:
+            QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać miast:\n{str(e)}")
+
+    def wczytaj_drogi(self):
+        try:
+            with open("drogi.txt", "r") as f:
+                self.drogi.clear()
+                for line in f:
+                    m1, m2 = line.strip().split(",")
+                    if m1 in self.miasta and m2 in self.miasta:
+                        self.drogi.append((m1, m2))
+            self.rysuj_mape()
+            QMessageBox.information(self, "Import", "Drogi wczytane z pliku drogi.txt")
+        except Exception as e:
+            QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać dróg:\n{str(e)}")
 
     def dystans(self, trasa):
         dyst = 0
