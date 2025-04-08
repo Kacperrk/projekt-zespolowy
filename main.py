@@ -284,7 +284,7 @@ class KomiwojazerApp(QWidget):
                 m2 = najlepsza_trasa[(i + 1) % len(najlepsza_trasa)]
                 x1, y1 = self.miasta[m1]
                 x2, y2 = self.miasta[m2]
-                self.ax.plot([x1, x2], [y1, y2], 'g-', linewidth=2)
+                self.ax.plot([x1, x2], [y1, y2], 'g-', linewidth=4)
 
         self.ax.set_title("Mapa miast i trasa")
         self.ax.set_xlabel("X")
