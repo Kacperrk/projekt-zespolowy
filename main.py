@@ -2,12 +2,12 @@ import sys
 import random
 import math
 from itertools import combinations
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QPushButton, QMessageBox
 )
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import matplotlib.pyplot as plt
 
 
 class KomiwojazerApp(QWidget):
@@ -17,6 +17,7 @@ class KomiwojazerApp(QWidget):
         self.miasta = {}
         self.drogi = []
         self.init_ui()
+
 
     def init_ui(self):
         layout = QHBoxLayout()
@@ -92,6 +93,7 @@ class KomiwojazerApp(QWidget):
 
         self.rysuj_mape()
 
+
     def dodaj_miasto(self):
         nazwa = self.nazwa_input.text().strip()
         try:
@@ -111,6 +113,7 @@ class KomiwojazerApp(QWidget):
         self.x_input.clear()
         self.y_input.clear()
         self.rysuj_mape()
+
 
     def polacz_miasta(self):
         m1 = self.m1_input.text().strip()
@@ -132,6 +135,7 @@ class KomiwojazerApp(QWidget):
         self.m1_input.clear()
         self.m2_input.clear()
 
+
     def polacz_wszystkie_miasta(self):
         miasta_list = list(self.miasta.keys())
         for m1, m2 in combinations(miasta_list, 2):
@@ -139,14 +143,17 @@ class KomiwojazerApp(QWidget):
                 self.drogi.append((m1, m2))
         self.rysuj_mape()
 
+
     def wyczysc_miasta(self):
         self.drogi.clear()
         self.miasta.clear()
         self.rysuj_mape()
 
+
     def wyczysc_polaczenia(self):
         self.drogi.clear()
         self.rysuj_mape()
+
 
     def generuj_losowe_miasta(self):
         start_index = len(self.miasta) + 1
@@ -158,6 +165,7 @@ class KomiwojazerApp(QWidget):
         self.drogi.clear()
         self.rysuj_mape()
 
+
     def eksportuj_miasta(self):
         try:
             with open("miasta.txt", "w") as f:
@@ -167,6 +175,7 @@ class KomiwojazerApp(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać miast:\n{str(e)}")
 
+
     def eksportuj_drogi(self):
         try:
             with open("drogi.txt", "w") as f:
@@ -175,6 +184,7 @@ class KomiwojazerApp(QWidget):
             QMessageBox.information(self, "Eksport", "Drogi zapisane do pliku drogi.txt")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać dróg:\n{str(e)}")
+
 
     def wczytaj_miasta(self):
         try:
@@ -191,6 +201,7 @@ class KomiwojazerApp(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać miast:\n{str(e)}")
 
+
     def wczytaj_drogi(self):
         try:
             with open("drogi.txt", "r") as f:
@@ -204,6 +215,7 @@ class KomiwojazerApp(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać dróg:\n{str(e)}")
 
+
     def dystans(self, trasa):
         dyst = 0
         for i in range(len(trasa)):
@@ -214,11 +226,13 @@ class KomiwojazerApp(QWidget):
             dyst += math.hypot(x2 - x1, y2 - y1)
         return dyst
 
+
     def krzyzowanie(self, p1, p2):
         a, b = sorted(random.sample(range(len(p1)), 2))
         srodek = p1[a:b]
         pozostale = [m for m in p2 if m not in srodek]
         return pozostale[:a] + srodek + pozostale[a:]
+
 
     def mutacja(self, trasa, wsp=0.1):
         for i in range(len(trasa)):
