@@ -185,7 +185,6 @@ class KomiwojazerApp(QWidget):
             with open("miasta.txt", "w") as f:
                 for nazwa, (x, y) in self.miasta.items():
                     f.write(f"{nazwa},{x},{y}\n")
-            QMessageBox.information(self, "Eksport", "Miasta zapisane do pliku miasta.txt")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać miast:\n{str(e)}")
 
@@ -195,7 +194,6 @@ class KomiwojazerApp(QWidget):
             with open("drogi.txt", "w") as f:
                 for m1, m2 in self.drogi:
                     f.write(f"{m1},{m2}\n")
-            QMessageBox.information(self, "Eksport", "Drogi zapisane do pliku drogi.txt")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać dróg:\n{str(e)}")
 
@@ -211,7 +209,6 @@ class KomiwojazerApp(QWidget):
                         self.miasta[nazwa] = (float(x), float(y))
             self.drogi.clear()
             self.rysuj_mape()
-            QMessageBox.information(self, "Import", "Miasta wczytane z pliku miasta.txt")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać miast:\n{str(e)}")
 
@@ -225,7 +222,6 @@ class KomiwojazerApp(QWidget):
                     if m1 in self.miasta and m2 in self.miasta:
                         self.drogi.append((m1, m2))
             self.rysuj_mape()
-            QMessageBox.information(self, "Import", "Drogi wczytane z pliku drogi.txt")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać dróg:\n{str(e)}")
 
