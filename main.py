@@ -241,14 +241,16 @@ class KomiwojazerApp(QWidget):
         return dyst
 
 
-    def krzyzowanie(self, p1, p2):
+    @staticmethod
+    def krzyzowanie(p1, p2):
         a, b = sorted(random.sample(range(len(p1)), 2))
         srodek = p1[a:b]
         pozostale = [m for m in p2 if m not in srodek]
         return pozostale[:a] + srodek + pozostale[a:]
 
 
-    def mutacja(self, trasa, wsp=0.1):
+    @staticmethod
+    def mutacja(trasa, wsp=0.1):
         for i in range(len(trasa)):
             if random.random() < wsp:
                 j = random.randint(0, len(trasa) - 1)
