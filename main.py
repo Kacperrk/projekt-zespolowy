@@ -13,19 +13,27 @@ from PyQt5.QtWidgets import (
 class KomiwojazerApp(QWidget):
     def __init__(self):
         super().__init__()
+
         self.setWindowTitle("Problem Komiwojażera - PyQt5")
         self.miasta = {}
         self.drogi = []
+
+        self.nazwa_input = QLineEdit()
+        self.x_input = QLineEdit()
+        self.y_input = QLineEdit()
+
+        self.m1_input = QLineEdit()
+        self.m2_input = QLineEdit()
+
+        self.figure, self.ax = plt.subplots()
+        self.canvas = FigureCanvas(self.figure)
+
         self.init_ui()
 
 
     def init_ui(self):
         layout = QHBoxLayout()
         controls = QVBoxLayout()
-
-        self.nazwa_input = QLineEdit()
-        self.x_input = QLineEdit()
-        self.y_input = QLineEdit()
 
         controls.addWidget(QLabel("Nazwa miasta:"))
         controls.addWidget(self.nazwa_input)
@@ -39,8 +47,6 @@ class KomiwojazerApp(QWidget):
         dodaj_btn.clicked.connect(self.dodaj_miasto)
         controls.addWidget(dodaj_btn)
 
-        self.m1_input = QLineEdit()
-        self.m2_input = QLineEdit()
         controls.addWidget(QLabel("Połącz miasta (podaj 2 nazwy):"))
         controls.addWidget(self.m1_input)
         controls.addWidget(self.m2_input)
@@ -94,9 +100,6 @@ class KomiwojazerApp(QWidget):
         # noinspection PyUnresolvedReferences
         wczytaj_drogi_btn.clicked.connect(self.wczytaj_drogi)
         controls.addWidget(wczytaj_drogi_btn)
-
-        self.figure, self.ax = plt.subplots()
-        self.canvas = FigureCanvas(self.figure)
 
         layout.addLayout(controls)
         layout.addWidget(self.canvas)
