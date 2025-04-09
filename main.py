@@ -35,6 +35,7 @@ class KomiwojazerApp(QWidget):
         controls.addWidget(self.y_input)
 
         dodaj_btn = QPushButton("Dodaj miasto")
+        # noinspection PyUnresolvedReferences
         dodaj_btn.clicked.connect(self.dodaj_miasto)
         controls.addWidget(dodaj_btn)
 
@@ -45,42 +46,52 @@ class KomiwojazerApp(QWidget):
         controls.addWidget(self.m2_input)
 
         polacz_btn = QPushButton("Połącz miasta")
+        # noinspection PyUnresolvedReferences
         polacz_btn.clicked.connect(self.polacz_miasta)
         controls.addWidget(polacz_btn)
 
         polacz_wszystkie_btn = QPushButton("Połącz wszystkie miasta")
+        # noinspection PyUnresolvedReferences
         polacz_wszystkie_btn.clicked.connect(self.polacz_wszystkie_miasta)
         controls.addWidget(polacz_wszystkie_btn)
 
         wyczysc_miasta_btn = QPushButton("Wyczyść miasta")
+        # noinspection PyUnresolvedReferences
         wyczysc_miasta_btn.clicked.connect(self.wyczysc_miasta)
         controls.addWidget(wyczysc_miasta_btn)
 
         wyczysc_btn = QPushButton("Wyczyść połączenia")
+        # noinspection PyUnresolvedReferences
         wyczysc_btn.clicked.connect(self.wyczysc_polaczenia)
         controls.addWidget(wyczysc_btn)
 
         generuj_btn = QPushButton("Generuj 5 losowych miast")
+        # noinspection PyUnresolvedReferences
         generuj_btn.clicked.connect(self.generuj_losowe_miasta)
         controls.addWidget(generuj_btn)
 
         znajdz_btn = QPushButton("Znajdź optymalną trasę")
+        # noinspection PyUnresolvedReferences
         znajdz_btn.clicked.connect(self.znajdz_najlepsza_trase)
         controls.addWidget(znajdz_btn)
 
         eksport_miasta_btn = QPushButton("Eksportuj miasta do pliku")
+        # noinspection PyUnresolvedReferences
         eksport_miasta_btn.clicked.connect(self.eksportuj_miasta)
         controls.addWidget(eksport_miasta_btn)
 
         eksport_drogi_btn = QPushButton("Eksportuj drogi do pliku")
+        # noinspection PyUnresolvedReferences
         eksport_drogi_btn.clicked.connect(self.eksportuj_drogi)
         controls.addWidget(eksport_drogi_btn)
 
         wczytaj_miasta_btn = QPushButton("Wczytaj miasta z pliku")
+        # noinspection PyUnresolvedReferences
         wczytaj_miasta_btn.clicked.connect(self.wczytaj_miasta)
         controls.addWidget(wczytaj_miasta_btn)
 
         wczytaj_drogi_btn = QPushButton("Wczytaj drogi z pliku")
+        # noinspection PyUnresolvedReferences
         wczytaj_drogi_btn.clicked.connect(self.wczytaj_drogi)
         controls.addWidget(wczytaj_drogi_btn)
 
