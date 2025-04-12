@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Qt5Agg')  # Wymusza backend Qt5 dla matplotlib
 
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
@@ -9,7 +11,6 @@ import matplotlib.pyplot as plt
 from itertools import combinations
 import random
 from algorytm import znajdz_najlepsza_trase
-
 
 class KomiwojazerApp(QWidget):
     def __init__(self):
@@ -32,6 +33,7 @@ class KomiwojazerApp(QWidget):
     def init_ui(self):
         layout = QHBoxLayout()
         controls = QVBoxLayout()
+
         controls.addWidget(QLabel("Nazwa miasta:"))
         controls.addWidget(self.nazwa_input)
         controls.addWidget(QLabel("Współrzędna X:"))
@@ -74,8 +76,10 @@ class KomiwojazerApp(QWidget):
         splitter = QSplitter(Qt.Horizontal)
         controls_widget = QWidget()
         controls_widget.setLayout(controls)
+
         splitter.addWidget(controls_widget)
         splitter.addWidget(self.canvas)
+
         splitter.setStretchFactor(0, 1)
         splitter.setStretchFactor(1, 4)
 
@@ -151,25 +155,31 @@ class KomiwojazerApp(QWidget):
 
     def rysuj_mape(self, najlepsza_trasa=None):
         self.ax.clear()
-        for nazwa, (x, y) in self.miasta.items():
-            self.ax.plot(x, y, 'ro')
-            self.ax.text(x + 0.2, y + 0.2, nazwa)
 
+        # Rysowanie miast
+        for nazwa, (x, y) in self.miasta.items():
+            self.ax.plot(x, y, 'ro', markersize=12, markeredgewidth=2,
+                         markeredgecolor='black')  # Większe kropki z obramowaniem
+            self.ax.text(x + 0.3, y + 0.3, nazwa, fontsize=12, color='black',
+                         fontweight='bold')  # Większa czcionka dla nazw miast
+
+        # Rysowanie połączeń (dróg)
         for m1, m2 in self.drogi:
             x1, y1 = self.miasta[m1]
             x2, y2 = self.miasta[m2]
-            self.ax.plot([x1, x2], [y1, y2], 'b--')
+            self.ax.plot([x1, x2], [y1, y2], 'darkblue', linewidth=3)  # Ciemny niebieski do linii dróg
 
+        # Rysowanie najlepszej trasy
         if najlepsza_trasa:
             for i in range(len(najlepsza_trasa)):
                 m1 = najlepsza_trasa[i]
                 m2 = najlepsza_trasa[(i + 1) % len(najlepsza_trasa)]
                 x1, y1 = self.miasta[m1]
                 x2, y2 = self.miasta[m2]
-                self.ax.plot([x1, x2], [y1, y2], 'g-', linewidth=4)
+                self.ax.plot([x1, x2], [y1, y2], 'limegreen', linewidth=4)  # Jasno zielona linia najlepszej trasy
 
-        self.ax.set_title("Mapa miast i trasa")
-        self.ax.set_xlabel("X")
-        self.ax.set_ylabel("Y")
-        self.ax.grid(True)
+        self.ax.set_title("Mapa miast i trasa", fontsize=14, fontweight='bold')
+        self.ax.set_xlabel("X", fontsize=12)
+        self.ax.set_ylabel("Y", fontsize=12)
+        self.ax.grid(True, linestyle='--', alpha=0.5)  # Delikatne linie siatki
         self.canvas.draw()
