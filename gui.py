@@ -1,16 +1,15 @@
-import matplotlib
-matplotlib.use('Qt5Agg')  # Wymusza backend Qt5 dla matplotlib
-
+import random
+import math
+from itertools import combinations
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QPushButton, QMessageBox, QSplitter
 )
 from PyQt5.QtCore import Qt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
-from itertools import combinations
-import random
 from algorytm import znajdz_najlepsza_trase
+
 
 class KomiwojazerApp(QWidget):
     def __init__(self):
@@ -34,45 +33,83 @@ class KomiwojazerApp(QWidget):
         layout = QHBoxLayout()
         controls = QVBoxLayout()
 
+        # Ustawienie koloru tła dla całego okna
+        self.setStyleSheet("background-color: #f0f0f0;")  # Kolor jasnoszary
+
+        # Ustawienia przycisków i inputów
         controls.addWidget(QLabel("Nazwa miasta:"))
         controls.addWidget(self.nazwa_input)
+        self.nazwa_input.setStyleSheet("background-color: #e6e6e6;")
+
         controls.addWidget(QLabel("Współrzędna X:"))
         controls.addWidget(self.x_input)
+        self.x_input.setStyleSheet("background-color: #e6e6e6;")
+
         controls.addWidget(QLabel("Współrzędna Y:"))
         controls.addWidget(self.y_input)
+        self.y_input.setStyleSheet("background-color: #e6e6e6;")
 
+        # Przycisk do dodawania miast
         dodaj_btn = QPushButton("Dodaj miasto")
+        dodaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
         dodaj_btn.clicked.connect(self.dodaj_miasto)
         controls.addWidget(dodaj_btn)
 
         controls.addWidget(QLabel("Połącz miasta (podaj 2 nazwy):"))
         controls.addWidget(self.m1_input)
+        self.m1_input.setStyleSheet("background-color: #e6e6e6;")
         controls.addWidget(self.m2_input)
+        self.m2_input.setStyleSheet("background-color: #e6e6e6;")
 
+        # Przycisk do łączenia miast
         polacz_btn = QPushButton("Połącz miasta")
+        polacz_btn.setStyleSheet("background-color: #2196F3; color: white;")
         polacz_btn.clicked.connect(self.polacz_miasta)
         controls.addWidget(polacz_btn)
 
+        # Przycisk do połączenia wszystkich miast
         polacz_wszystkie_btn = QPushButton("Połącz wszystkie miasta")
+        polacz_wszystkie_btn.setStyleSheet("background-color: #2196F3; color: white;")
         polacz_wszystkie_btn.clicked.connect(self.polacz_wszystkie_miasta)
         controls.addWidget(polacz_wszystkie_btn)
 
+        # Przycisk do wyczyszczenia miast
         wyczysc_miasta_btn = QPushButton("Wyczyść miasta")
+        wyczysc_miasta_btn.setStyleSheet("background-color: #FF5733; color: white;")
         wyczysc_miasta_btn.clicked.connect(self.wyczysc_miasta)
         controls.addWidget(wyczysc_miasta_btn)
 
+        # Przycisk do wyczyszczenia połączeń
         wyczysc_btn = QPushButton("Wyczyść połączenia")
+        wyczysc_btn.setStyleSheet("background-color: #FF5733; color: white;")
         wyczysc_btn.clicked.connect(self.wyczysc_polaczenia)
         controls.addWidget(wyczysc_btn)
 
+        # Przycisk do generowania losowych miast
         generuj_btn = QPushButton("Generuj 5 losowych miast")
+        generuj_btn.setStyleSheet("background-color: #FFEB3B;")
         generuj_btn.clicked.connect(self.generuj_losowe_miasta)
         controls.addWidget(generuj_btn)
 
+        # Przycisk do znalezienia optymalnej trasy
         znajdz_btn = QPushButton("Znajdź optymalną trasę")
+        znajdz_btn.setStyleSheet("background-color: #4CAF50; color: white;")
         znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase(self))
         controls.addWidget(znajdz_btn)
 
+        # Przycisk do zapisania stanu projektu
+        zapis_btn = QPushButton("Zapisz stan projektu")
+        zapis_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        zapis_btn.clicked.connect(self.zapisz_stan_projektu)
+        controls.addWidget(zapis_btn)
+
+        # Przycisk do wczytania stanu projektu
+        wczytaj_btn = QPushButton("Wczytaj stan projektu")
+        wczytaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        wczytaj_btn.clicked.connect(self.wczytaj_stan_projektu)
+        controls.addWidget(wczytaj_btn)
+
+        # Ustawienie kontrolki "splitter" na lewą (kontrolki) i prawą (mapa)
         splitter = QSplitter(Qt.Horizontal)
         controls_widget = QWidget()
         controls_widget.setLayout(controls)
@@ -153,33 +190,59 @@ class KomiwojazerApp(QWidget):
         self.drogi.clear()
         self.rysuj_mape()
 
+    def zapisz_stan_projektu(self):
+        try:
+            with open("stan_projektu.txt", "w") as f:
+                for nazwa, (x, y) in self.miasta.items():
+                    f.write(f"{nazwa},{x},{y}\n")
+                for m1, m2 in self.drogi:
+                    f.write(f"{m1},{m2}\n")
+            QMessageBox.information(self, "Sukces", "Stan projektu zapisany pomyślnie.")
+        except Exception as e:
+            QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać stanu projektu: {str(e)}")
+
+    def wczytaj_stan_projektu(self):
+        try:
+            with open("stan_projektu.txt", "r") as f:
+                self.miasta.clear()
+                self.drogi.clear()
+                for line in f:
+                    parts = line.strip().split(",")
+                    if len(parts) == 3:
+                        nazwa, x, y = parts
+                        self.miasta[nazwa] = (float(x), float(y))
+                    elif len(parts) == 2:
+                        m1, m2 = parts
+                        self.drogi.append((m1, m2))
+            self.rysuj_mape()
+            QMessageBox.information(self, "Sukces", "Stan projektu wczytany pomyślnie.")
+        except Exception as e:
+            QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać stanu projektu: {str(e)}")
+
     def rysuj_mape(self, najlepsza_trasa=None):
         self.ax.clear()
 
-        # Rysowanie miast
         for nazwa, (x, y) in self.miasta.items():
             self.ax.plot(x, y, 'ro', markersize=12, markeredgewidth=2,
-                         markeredgecolor='black')  # Większe kropki z obramowaniem
+                         markeredgecolor='black')
             self.ax.text(x + 0.3, y + 0.3, nazwa, fontsize=12, color='black',
-                         fontweight='bold')  # Większa czcionka dla nazw miast
+                         fontweight='bold')
 
-        # Rysowanie połączeń (dróg)
         for m1, m2 in self.drogi:
             x1, y1 = self.miasta[m1]
             x2, y2 = self.miasta[m2]
-            self.ax.plot([x1, x2], [y1, y2], 'darkblue', linewidth=3)  # Ciemny niebieski do linii dróg
+            self.ax.plot([x1, x2], [y1, y2], 'darkblue', linewidth=3)
 
-        # Rysowanie najlepszej trasy
         if najlepsza_trasa:
             for i in range(len(najlepsza_trasa)):
                 m1 = najlepsza_trasa[i]
                 m2 = najlepsza_trasa[(i + 1) % len(najlepsza_trasa)]
                 x1, y1 = self.miasta[m1]
                 x2, y2 = self.miasta[m2]
-                self.ax.plot([x1, x2], [y1, y2], 'limegreen', linewidth=4)  # Jasno zielona linia najlepszej trasy
+                self.ax.plot([x1, x2], [y1, y2], 'limegreen', linewidth=4)
 
         self.ax.set_title("Mapa miast i trasa", fontsize=14, fontweight='bold')
         self.ax.set_xlabel("X", fontsize=12)
         self.ax.set_ylabel("Y", fontsize=12)
-        self.ax.grid(True, linestyle='--', alpha=0.5)  # Delikatne linie siatki
+        self.ax.grid(True, linestyle='--', alpha=0.5)
         self.canvas.draw()
