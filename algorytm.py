@@ -1,7 +1,19 @@
-
 import math
 import random
 from PyQt5.QtWidgets import QMessageBox
+
+
+def zapisz_najlepsza_trase_do_pliku(self, najlepsza):
+    calkowita_odleglosc = dystans(self.miasta, najlepsza)
+
+    trasa_jako_tekst = " -> ".join(najlepsza)
+    linijka_do_pliku = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
+
+    try:
+        with open("najlepsze_trasy.txt", "a") as file:
+            file.write(linijka_do_pliku)
+    except Exception as e:
+        QMessageBox.critical(self, "Błąd zapisu", f"Nie udało się zapisać trasy: {str(e)}")
 
 
 def dystans(miasta, trasa):
@@ -67,3 +79,5 @@ def znajdz_najlepsza_trase(self, pokolenia=500, populacja_rozmiar=200):
 
     najlepsza = min(populacja, key=lambda trasa: dystans(self.miasta, trasa))
     self.rysuj_mape(najlepsza)
+
+    zapisz_najlepsza_trase_do_pliku(self, najlepsza)
