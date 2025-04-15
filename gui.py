@@ -92,7 +92,7 @@ class KomiwojazerApp(QWidget):
 
         # Przycisk do znalezienia optymalnej trasy
         znajdz_btn = QPushButton("Znajdź optymalną trasę")
-        znajdz_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
         znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase(self))
         controls.addWidget(znajdz_btn)
 
