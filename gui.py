@@ -1,8 +1,7 @@
 import random
-import math
 from itertools import combinations
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QPushButton, QMessageBox, QSplitter
 )
 from PyQt5.QtCore import Qt
@@ -197,7 +196,6 @@ class KomiwojazerApp(QWidget):
                     f.write(f"{nazwa},{x},{y}\n")
                 for m1, m2 in self.drogi:
                     f.write(f"{m1},{m2}\n")
-            QMessageBox.information(self, "Sukces", "Stan projektu zapisany pomyślnie.")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać stanu projektu: {str(e)}")
 
@@ -215,7 +213,6 @@ class KomiwojazerApp(QWidget):
                         m1, m2 = parts
                         self.drogi.append((m1, m2))
             self.rysuj_mape()
-            QMessageBox.information(self, "Sukces", "Stan projektu wczytany pomyślnie.")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać stanu projektu: {str(e)}")
 
