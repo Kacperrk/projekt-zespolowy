@@ -9,7 +9,6 @@ def zapisz_najlepsza_trase_do_pliku(self, najlepsza):
     trasa_jako_tekst = " -> ".join(najlepsza)
     linijka_do_pliku = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
 
-    # Przy zmianie najlepsze_trasy.txt zmienić też w .gitignore
     try:
         with open("najlepsze_trasy.txt", "a") as file:
             file.write(linijka_do_pliku)
@@ -42,7 +41,7 @@ def mutacja(trasa, wsp=0.1):
             trasa[i], trasa[j] = trasa[j], trasa[i]
 
 
-def znajdz_najlepsza_trase(self, pokolenia=500, populacja_rozmiar=200):
+def znajdz_najlepsza_trase_genetyczny(self, pokolenia=500, populacja_rozmiar=200):
     miasta_lista = list(self.miasta.keys())
     if len(miasta_lista) < 2:
         QMessageBox.warning(self, "Uwaga", "Potrzebujesz co najmniej 2 miast")
@@ -82,3 +81,44 @@ def znajdz_najlepsza_trase(self, pokolenia=500, populacja_rozmiar=200):
     self.rysuj_mape(najlepsza)
 
     zapisz_najlepsza_trase_do_pliku(self, najlepsza)
+
+
+def znajdz_najlepsza_trase_najblizszego_sasiada(self):
+    miasta = self.miasta
+
+    if len(miasta) < 2:
+        QMessageBox.warning(self, "Uwaga", "Potrzebujesz co najmniej 2 miast")
+        return
+
+    nazwy = list(miasta.keys())
+
+
+    def najblizszy_sasiad(start):
+        nieodwiedzone = set(nazwy)
+        trasa = [start]
+        nieodwiedzone.remove(start)
+        while nieodwiedzone:
+            ostatnie = trasa[-1]
+            najblizsze = min(
+                nieodwiedzone,
+                key=lambda m: math.hypot(
+                    miasta[ostatnie][0] - miasta[m][0],
+                    miasta[ostatnie][1] - miasta[m][1]
+                )
+            )
+            trasa.append(najblizsze)
+            nieodwiedzone.remove(najblizsze)
+        return trasa
+
+
+    najlepsza_trasa = None
+    najlepszy_dystans = float('inf')
+    for start in nazwy:
+        trasa = najblizszy_sasiad(start)
+        dist = dystans(miasta, trasa)
+        if dist < najlepszy_dystans:
+            najlepszy_dystans = dist
+            najlepsza_trasa = trasa
+
+    self.rysuj_mape(najlepsza_trasa)
+    zapisz_najlepsza_trase_do_pliku(self, najlepsza_trasa)

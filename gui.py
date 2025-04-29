@@ -7,7 +7,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
-from algorytm import znajdz_najlepsza_trase
+from algorytm import znajdz_najlepsza_trase_genetyczny
+from algorytm import znajdz_najlepsza_trase_najblizszego_sasiada
 
 
 class KomiwojazerApp(QWidget):
@@ -91,9 +92,15 @@ class KomiwojazerApp(QWidget):
         controls.addWidget(generuj_btn)
 
         # Przycisk do znalezienia optymalnej trasy
-        znajdz_btn = QPushButton("Znajdź optymalną trasę")
+        znajdz_btn = QPushButton("Znajdź optymalną trasę (genetyczny)")
         znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
-        znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase(self))
+        znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase_genetyczny(self))
+        controls.addWidget(znajdz_btn)
+
+        # Przycisk do znalezienia optymalnej trasy2
+        znajdz_btn = QPushButton("Znajdź optymalną trasę (najbliższego sąsiada)")
+        znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
+        znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self))
         controls.addWidget(znajdz_btn)
 
         # Przycisk do zapisania stanu projektu
@@ -190,7 +197,6 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def zapisz_stan_projektu(self):
-        # Przy zmianie stan_projektu.txt zmienić też w .gitignore
         try:
             with open("stan_projektu.txt", "w") as f:
                 for nazwa, (x, y) in self.miasta.items():
@@ -201,7 +207,6 @@ class KomiwojazerApp(QWidget):
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać stanu projektu: {str(e)}")
 
     def wczytaj_stan_projektu(self):
-        # Przy zmianie stan_projektu.txt zmienić też w .gitignore
         try:
             with open("stan_projektu.txt", "r") as f:
                 self.miasta.clear()
