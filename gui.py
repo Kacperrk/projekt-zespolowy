@@ -190,6 +190,7 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def zapisz_stan_projektu(self):
+        # Przy zmianie stan_projektu.txt zmienić też w .gitignore
         try:
             with open("stan_projektu.txt", "w") as f:
                 for nazwa, (x, y) in self.miasta.items():
@@ -200,6 +201,7 @@ class KomiwojazerApp(QWidget):
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać stanu projektu: {str(e)}")
 
     def wczytaj_stan_projektu(self):
+        # Przy zmianie stan_projektu.txt zmienić też w .gitignore
         try:
             with open("stan_projektu.txt", "r") as f:
                 self.miasta.clear()
