@@ -1,0 +1,54 @@
+# Ignorowanie środowiska wirtualnego
+.venv/
+
+# Ignorowanie plików PyCharm
+.idea/
+*.iml
+
+# Ignorowanie plików pycache
+__pycache__/
+
+# Ignorowanie plików logów
+*.log
+
+# Ignorowanie plików konfiguracyjnych systemu operacyjnego
+
+## Windows
+# Thumbs.db — miniaturki obrazków
+Thumbs.db
+# Desktop.ini — plik konfiguracyjny folderów w systemie Windows
+Desktop.ini
+# Pliki indeksów systemowych
+ehthumbs.db
+
+## macOS
+# .DS_Store — plik konfiguracyjny systemu macOS dla folderów
+.DS_Store
+# .AppleDouble — pliki AppleDouble (związane z plikami na zewnętrznych nośnikach)
+.AppleDouble
+# .LSOverride — plik systemowy na macOS, niepotrzebny w repozytorium
+.LSOverride
+
+## Linux
+# pliki wirtualnych urządzeń
+*~
+
+# pliki do śledzenia ustawień editorów
+# .swp — pliki swap używane przez Vim
+*.swp
+# .swo — pliki tymczasowe używane przez Vim
+*.swo
+# .bak — kopie zapasowe plików, np. tworzone przez edytory
+*.bak
+# .tmp — pliki tymczasowe
+*.tmp
+
+# Ignorowanie plików testowych
+*.coverage
+*.tox
+*.nox
+*.coverage.*
+
+# Pliki tworzone w projekcie
+stan_projektu.txt
+najlepsze_trasy.txt
