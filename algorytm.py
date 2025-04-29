@@ -9,6 +9,7 @@ def zapisz_najlepsza_trase_do_pliku(self, najlepsza):
     trasa_jako_tekst = " -> ".join(najlepsza)
     linijka_do_pliku = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
 
+    # Przy zmianie najlepsze_trasy.txt zmienić też w .gitignore
     try:
         with open("najlepsze_trasy.txt", "a") as file:
             file.write(linijka_do_pliku)
