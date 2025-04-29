@@ -198,6 +198,7 @@ class KomiwojazerApp(QWidget):
 
     def zapisz_stan_projektu(self):
         try:
+            # Przy zmianie stan_projektu.txt zmienić też w .gitignore
             with open("stan_projektu.txt", "w") as f:
                 for nazwa, (x, y) in self.miasta.items():
                     f.write(f"{nazwa},{x},{y}\n")
@@ -208,6 +209,7 @@ class KomiwojazerApp(QWidget):
 
     def wczytaj_stan_projektu(self):
         try:
+            # Przy zmianie stan_projektu.txt zmienić też w .gitignore
             with open("stan_projektu.txt", "r") as f:
                 self.miasta.clear()
                 self.drogi.clear()
