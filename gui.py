@@ -70,6 +70,7 @@ class KomiwojazerApp(QWidget):
 
         dodaj_btn = QPushButton("Dodaj miasto")
         dodaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        # noinspection PyUnresolvedReferences
         dodaj_btn.clicked.connect(self.dodaj_miasto)
         controls.addWidget(dodaj_btn)
 
@@ -79,46 +80,55 @@ class KomiwojazerApp(QWidget):
 
         polacz_btn = QPushButton("Połącz miasta")
         polacz_btn.setStyleSheet("background-color: #2196F3; color: white;")
+        # noinspection PyUnresolvedReferences
         polacz_btn.clicked.connect(self.polacz_miasta)
         controls.addWidget(polacz_btn)
 
         polacz_wszystkie_btn = QPushButton("Połącz wszystkie miasta")
         polacz_wszystkie_btn.setStyleSheet("background-color: #2196F3; color: white;")
+        # noinspection PyUnresolvedReferences
         polacz_wszystkie_btn.clicked.connect(self.polacz_wszystkie_miasta)
         controls.addWidget(polacz_wszystkie_btn)
 
         wyczysc_miasta_btn = QPushButton("Wyczyść miasta")
         wyczysc_miasta_btn.setStyleSheet("background-color: #FF5733; color: white;")
+        # noinspection PyUnresolvedReferences
         wyczysc_miasta_btn.clicked.connect(self.wyczysc_miasta)
         controls.addWidget(wyczysc_miasta_btn)
 
         wyczysc_btn = QPushButton("Wyczyść połączenia")
         wyczysc_btn.setStyleSheet("background-color: #FF5733; color: white;")
+        # noinspection PyUnresolvedReferences
         wyczysc_btn.clicked.connect(self.wyczysc_polaczenia)
         controls.addWidget(wyczysc_btn)
 
         generuj_btn = QPushButton("Generuj 5 losowych miast")
         generuj_btn.setStyleSheet("background-color: #FFEB3B;")
+        # noinspection PyUnresolvedReferences
         generuj_btn.clicked.connect(self.generuj_losowe_miasta)
         controls.addWidget(generuj_btn)
 
         znajdz_btn = QPushButton("Znajdź optymalną trasę (genetyczny)")
         znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
+        # noinspection PyUnresolvedReferences
         znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase_genetyczny(self))
         controls.addWidget(znajdz_btn)
 
         znajdz_btn2 = QPushButton("Znajdź optymalną trasę (najbliższego sąsiada)")
         znajdz_btn2.setStyleSheet("background-color: #B04CAD; color: white;")
+        # noinspection PyUnresolvedReferences
         znajdz_btn2.clicked.connect(lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self))
         controls.addWidget(znajdz_btn2)
 
         zapis_btn = QPushButton("Zapisz stan projektu")
         zapis_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        # noinspection PyUnresolvedReferences
         zapis_btn.clicked.connect(self.zapisz_stan_projektu)
         controls.addWidget(zapis_btn)
 
         wczytaj_btn = QPushButton("Wczytaj stan projektu")
         wczytaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        # noinspection PyUnresolvedReferences
         wczytaj_btn.clicked.connect(self.wczytaj_stan_projektu)
         controls.addWidget(wczytaj_btn)
 
