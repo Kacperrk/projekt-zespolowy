@@ -1,6 +1,6 @@
 import random
 from itertools import combinations
-from typing import Dict, Tuple, List, Optional
+from typing import Optional
 
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
@@ -17,8 +17,8 @@ from algorytm import znajdz_najlepsza_trase_najblizszego_sasiada
 
 
 class KomiwojazerApp(QWidget):
-    miasta: Dict[str, Tuple[float, float]]
-    drogi: List[Tuple[str, str]]
+    miasta: dict[str, tuple[float, float]]
+    drogi: list[tuple[str, str]]
 
     nazwa_input: QLineEdit
     x_input: QLineEdit
@@ -185,7 +185,7 @@ class KomiwojazerApp(QWidget):
         self.m2_input.clear()
 
     def polacz_wszystkie_miasta(self) -> None:
-        miasta_list: List[str] = list(self.miasta.keys())
+        miasta_list: list[str] = list(self.miasta.keys())
         for m1, m2 in combinations(miasta_list, 2):
             if (m1, m2) not in self.drogi and (m2, m1) not in self.drogi:
                 self.drogi.append((m1, m2))
@@ -237,7 +237,7 @@ class KomiwojazerApp(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać stanu projektu: {str(e)}")
 
-    def rysuj_mape(self, najlepsza_trasa: Optional[List[str]] = None) -> None:
+    def rysuj_mape(self, najlepsza_trasa: Optional[list[str]] = None) -> None:
         self.ax.clear()
 
         for nazwa, (x, y) in self.miasta.items():
