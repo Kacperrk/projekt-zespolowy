@@ -15,6 +15,7 @@ class KomiwojazerApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Problem Komiwojażera - PyQt5")
+        self.resize(1200, 800)  # Większe okno startowe
         self.miasta = {}
         self.drogi = []
 
@@ -33,23 +34,36 @@ class KomiwojazerApp(QWidget):
         layout = QHBoxLayout()
         controls = QVBoxLayout()
 
-        # Ustawienie koloru tła dla całego okna
-        self.setStyleSheet("background-color: #f0f0f0;")  # Kolor jasnoszary
+        # Styl globalny (większe czcionki i padding)
+        self.setStyleSheet("""
+            QWidget {
+                font-size: 14pt;
+            }
+            QLineEdit {
+                padding: 6px;
+                font-size: 14pt;
+            }
+            QPushButton {
+                padding: 10px;
+                font-size: 14pt;
+            }
+            QLabel {
+                font-size: 14pt;
+                font-weight: bold;
+            }
+        """)
 
-        # Ustawienia przycisków i inputów
+        # Pole do wpisania miasta
         controls.addWidget(QLabel("Nazwa miasta:"))
         controls.addWidget(self.nazwa_input)
-        self.nazwa_input.setStyleSheet("background-color: #e6e6e6;")
 
         controls.addWidget(QLabel("Współrzędna X:"))
         controls.addWidget(self.x_input)
-        self.x_input.setStyleSheet("background-color: #e6e6e6;")
 
         controls.addWidget(QLabel("Współrzędna Y:"))
         controls.addWidget(self.y_input)
-        self.y_input.setStyleSheet("background-color: #e6e6e6;")
 
-        # Przycisk do dodawania miast
+        # Przycisk dodawania miasta
         dodaj_btn = QPushButton("Dodaj miasto")
         dodaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
         dodaj_btn.clicked.connect(self.dodaj_miasto)
@@ -57,74 +71,61 @@ class KomiwojazerApp(QWidget):
 
         controls.addWidget(QLabel("Połącz miasta (podaj 2 nazwy):"))
         controls.addWidget(self.m1_input)
-        self.m1_input.setStyleSheet("background-color: #e6e6e6;")
         controls.addWidget(self.m2_input)
-        self.m2_input.setStyleSheet("background-color: #e6e6e6;")
 
-        # Przycisk do łączenia miast
         polacz_btn = QPushButton("Połącz miasta")
         polacz_btn.setStyleSheet("background-color: #2196F3; color: white;")
         polacz_btn.clicked.connect(self.polacz_miasta)
         controls.addWidget(polacz_btn)
 
-        # Przycisk do połączenia wszystkich miast
         polacz_wszystkie_btn = QPushButton("Połącz wszystkie miasta")
         polacz_wszystkie_btn.setStyleSheet("background-color: #2196F3; color: white;")
         polacz_wszystkie_btn.clicked.connect(self.polacz_wszystkie_miasta)
         controls.addWidget(polacz_wszystkie_btn)
 
-        # Przycisk do wyczyszczenia miast
         wyczysc_miasta_btn = QPushButton("Wyczyść miasta")
         wyczysc_miasta_btn.setStyleSheet("background-color: #FF5733; color: white;")
         wyczysc_miasta_btn.clicked.connect(self.wyczysc_miasta)
         controls.addWidget(wyczysc_miasta_btn)
 
-        # Przycisk do wyczyszczenia połączeń
         wyczysc_btn = QPushButton("Wyczyść połączenia")
         wyczysc_btn.setStyleSheet("background-color: #FF5733; color: white;")
         wyczysc_btn.clicked.connect(self.wyczysc_polaczenia)
         controls.addWidget(wyczysc_btn)
 
-        # Przycisk do generowania losowych miast
         generuj_btn = QPushButton("Generuj 5 losowych miast")
         generuj_btn.setStyleSheet("background-color: #FFEB3B;")
         generuj_btn.clicked.connect(self.generuj_losowe_miasta)
         controls.addWidget(generuj_btn)
 
-        # Przycisk do znalezienia optymalnej trasy
         znajdz_btn = QPushButton("Znajdź optymalną trasę (genetyczny)")
         znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
         znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase_genetyczny(self))
         controls.addWidget(znajdz_btn)
 
-        # Przycisk do znalezienia optymalnej trasy2
-        znajdz_btn = QPushButton("Znajdź optymalną trasę (najbliższego sąsiada)")
-        znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
-        znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self))
-        controls.addWidget(znajdz_btn)
+        znajdz_btn2 = QPushButton("Znajdź optymalną trasę (najbliższego sąsiada)")
+        znajdz_btn2.setStyleSheet("background-color: #B04CAD; color: white;")
+        znajdz_btn2.clicked.connect(lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self))
+        controls.addWidget(znajdz_btn2)
 
-        # Przycisk do zapisania stanu projektu
         zapis_btn = QPushButton("Zapisz stan projektu")
         zapis_btn.setStyleSheet("background-color: #4CAF50; color: white;")
         zapis_btn.clicked.connect(self.zapisz_stan_projektu)
         controls.addWidget(zapis_btn)
 
-        # Przycisk do wczytania stanu projektu
         wczytaj_btn = QPushButton("Wczytaj stan projektu")
         wczytaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
         wczytaj_btn.clicked.connect(self.wczytaj_stan_projektu)
         controls.addWidget(wczytaj_btn)
 
-        # Ustawienie kontrolki "splitter" na lewą (kontrolki) i prawą (mapa)
+        # Podział GUI na lewy panel (kontrolki) i prawy (mapa)
         splitter = QSplitter(Qt.Horizontal)
         controls_widget = QWidget()
         controls_widget.setLayout(controls)
 
         splitter.addWidget(controls_widget)
         splitter.addWidget(self.canvas)
-
-        splitter.setStretchFactor(0, 1)
-        splitter.setStretchFactor(1, 4)
+        splitter.setSizes([400, 800])  # Zwiększenie szerokości panelu bocznego
 
         layout.addWidget(splitter)
         self.setLayout(layout)
@@ -198,7 +199,6 @@ class KomiwojazerApp(QWidget):
 
     def zapisz_stan_projektu(self):
         try:
-            # Przy zmianie stan_projektu.txt zmienić też w .gitignore
             with open("stan_projektu.txt", "w") as f:
                 for nazwa, (x, y) in self.miasta.items():
                     f.write(f"{nazwa},{x},{y}\n")
@@ -209,7 +209,6 @@ class KomiwojazerApp(QWidget):
 
     def wczytaj_stan_projektu(self):
         try:
-            # Przy zmianie stan_projektu.txt zmienić też w .gitignore
             with open("stan_projektu.txt", "r") as f:
                 self.miasta.clear()
                 self.drogi.clear()
