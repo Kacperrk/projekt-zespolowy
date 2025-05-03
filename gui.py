@@ -1,5 +1,7 @@
 import random
 from itertools import combinations
+from typing import Dict, Tuple, List, Optional
+
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QPushButton, QMessageBox, QSplitter
@@ -7,15 +9,31 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.axes import Axes
+
 from algorytm import znajdz_najlepsza_trase_genetyczny
 from algorytm import znajdz_najlepsza_trase_najblizszego_sasiada
 
 
 class KomiwojazerApp(QWidget):
-    def __init__(self):
+    miasta: Dict[str, Tuple[float, float]]
+    drogi: List[Tuple[str, str]]
+
+    nazwa_input: QLineEdit
+    x_input: QLineEdit
+    y_input: QLineEdit
+    m1_input: QLineEdit
+    m2_input: QLineEdit
+
+    figure: Figure
+    ax: Axes
+    canvas: FigureCanvas
+
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Problem Komiwojażera - PyQt5")
-        self.resize(1200, 800)  # Większe okno startowe
+        self.resize(1200, 800)
         self.miasta = {}
         self.drogi = []
 
@@ -30,30 +48,17 @@ class KomiwojazerApp(QWidget):
 
         self.init_ui()
 
-    def init_ui(self):
+    def init_ui(self) -> None:
         layout = QHBoxLayout()
         controls = QVBoxLayout()
 
-        # Styl globalny (większe czcionki i padding)
         self.setStyleSheet("""
-            QWidget {
-                font-size: 14pt;
-            }
-            QLineEdit {
-                padding: 6px;
-                font-size: 14pt;
-            }
-            QPushButton {
-                padding: 10px;
-                font-size: 14pt;
-            }
-            QLabel {
-                font-size: 14pt;
-                font-weight: bold;
-            }
+            QWidget { font-size: 14pt; }
+            QLineEdit { padding: 6px; font-size: 14pt; }
+            QPushButton { padding: 10px; font-size: 14pt; }
+            QLabel { font-size: 14pt; font-weight: bold; }
         """)
 
-        # Pole do wpisania miasta
         controls.addWidget(QLabel("Nazwa miasta:"))
         controls.addWidget(self.nazwa_input)
 
@@ -63,7 +68,6 @@ class KomiwojazerApp(QWidget):
         controls.addWidget(QLabel("Współrzędna Y:"))
         controls.addWidget(self.y_input)
 
-        # Przycisk dodawania miasta
         dodaj_btn = QPushButton("Dodaj miasto")
         dodaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
         dodaj_btn.clicked.connect(self.dodaj_miasto)
@@ -118,24 +122,23 @@ class KomiwojazerApp(QWidget):
         wczytaj_btn.clicked.connect(self.wczytaj_stan_projektu)
         controls.addWidget(wczytaj_btn)
 
-        # Podział GUI na lewy panel (kontrolki) i prawy (mapa)
         splitter = QSplitter(Qt.Horizontal)
         controls_widget = QWidget()
         controls_widget.setLayout(controls)
 
         splitter.addWidget(controls_widget)
         splitter.addWidget(self.canvas)
-        splitter.setSizes([400, 800])  # Zwiększenie szerokości panelu bocznego
+        splitter.setSizes([400, 800])
 
         layout.addWidget(splitter)
         self.setLayout(layout)
         self.rysuj_mape()
 
-    def dodaj_miasto(self):
-        nazwa = self.nazwa_input.text().strip()
+    def dodaj_miasto(self) -> None:
+        nazwa: str = self.nazwa_input.text().strip()
         try:
-            x = float(self.x_input.text().strip())
-            y = float(self.y_input.text().strip())
+            x: float = float(self.x_input.text().strip())
+            y: float = float(self.y_input.text().strip())
         except ValueError:
             QMessageBox.critical(self, "Błąd", "Wprowadź poprawne współrzędne.")
             return
@@ -151,9 +154,9 @@ class KomiwojazerApp(QWidget):
         self.y_input.clear()
         self.rysuj_mape()
 
-    def polacz_miasta(self):
-        m1 = self.m1_input.text().strip()
-        m2 = self.m2_input.text().strip()
+    def polacz_miasta(self) -> None:
+        m1: str = self.m1_input.text().strip()
+        m2: str = self.m2_input.text().strip()
 
         if m1 == m2:
             QMessageBox.warning(self, "Uwaga", "Nie można połączyć miasta z samym sobą.")
@@ -171,33 +174,33 @@ class KomiwojazerApp(QWidget):
         self.m1_input.clear()
         self.m2_input.clear()
 
-    def polacz_wszystkie_miasta(self):
-        miasta_list = list(self.miasta.keys())
+    def polacz_wszystkie_miasta(self) -> None:
+        miasta_list: List[str] = list(self.miasta.keys())
         for m1, m2 in combinations(miasta_list, 2):
             if (m1, m2) not in self.drogi and (m2, m1) not in self.drogi:
                 self.drogi.append((m1, m2))
         self.rysuj_mape()
 
-    def wyczysc_miasta(self):
+    def wyczysc_miasta(self) -> None:
         self.drogi.clear()
         self.miasta.clear()
         self.rysuj_mape()
 
-    def wyczysc_polaczenia(self):
+    def wyczysc_polaczenia(self) -> None:
         self.drogi.clear()
         self.rysuj_mape()
 
-    def generuj_losowe_miasta(self):
-        start_index = len(self.miasta) + 1
+    def generuj_losowe_miasta(self) -> None:
+        start_index: int = len(self.miasta) + 1
         for i in range(5):
-            nazwa = f"Miasto{start_index + i}"
-            x = random.randint(0, 50)
-            y = random.randint(0, 50)
+            nazwa: str = f"Miasto{start_index + i}"
+            x: int = random.randint(0, 50)
+            y: int = random.randint(0, 50)
             self.miasta[nazwa] = (x, y)
         self.drogi.clear()
         self.rysuj_mape()
 
-    def zapisz_stan_projektu(self):
+    def zapisz_stan_projektu(self) -> None:
         try:
             with open("stan_projektu.txt", "w") as f:
                 for nazwa, (x, y) in self.miasta.items():
@@ -207,7 +210,7 @@ class KomiwojazerApp(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać stanu projektu: {str(e)}")
 
-    def wczytaj_stan_projektu(self):
+    def wczytaj_stan_projektu(self) -> None:
         try:
             with open("stan_projektu.txt", "r") as f:
                 self.miasta.clear()
@@ -224,7 +227,7 @@ class KomiwojazerApp(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać stanu projektu: {str(e)}")
 
-    def rysuj_mape(self, najlepsza_trasa=None):
+    def rysuj_mape(self, najlepsza_trasa: Optional[List[str]] = None) -> None:
         self.ax.clear()
 
         for nazwa, (x, y) in self.miasta.items():
