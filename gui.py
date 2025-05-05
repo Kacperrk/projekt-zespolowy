@@ -23,8 +23,8 @@ class KomiwojazerApp(QWidget):
     nazwa_input: QLineEdit
     x_input: QLineEdit
     y_input: QLineEdit
-    m1_input: QLineEdit
-    m2_input: QLineEdit
+    miasto1_input: QLineEdit
+    miasto2_input: QLineEdit
 
     figure: Figure
     ax: Axes
@@ -40,8 +40,8 @@ class KomiwojazerApp(QWidget):
         self.nazwa_input = QLineEdit()
         self.x_input = QLineEdit()
         self.y_input = QLineEdit()
-        self.m1_input = QLineEdit()
-        self.m2_input = QLineEdit()
+        self.miasto1_input = QLineEdit()
+        self.miasto2_input = QLineEdit()
 
         self.figure, self.ax = plt.subplots()
         self.canvas = FigureCanvas(self.figure)
@@ -70,65 +70,55 @@ class KomiwojazerApp(QWidget):
 
         dodaj_btn = QPushButton("Dodaj miasto")
         dodaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
-        # noinspection PyUnresolvedReferences
         dodaj_btn.clicked.connect(self.dodaj_miasto)
         controls.addWidget(dodaj_btn)
 
         controls.addWidget(QLabel("Połącz miasta (podaj 2 nazwy):"))
-        controls.addWidget(self.m1_input)
-        controls.addWidget(self.m2_input)
+        controls.addWidget(self.miasto1_input)
+        controls.addWidget(self.miasto2_input)
 
         polacz_btn = QPushButton("Połącz miasta")
         polacz_btn.setStyleSheet("background-color: #2196F3; color: white;")
-        # noinspection PyUnresolvedReferences
         polacz_btn.clicked.connect(self.polacz_miasta)
         controls.addWidget(polacz_btn)
 
         polacz_wszystkie_btn = QPushButton("Połącz wszystkie miasta")
         polacz_wszystkie_btn.setStyleSheet("background-color: #2196F3; color: white;")
-        # noinspection PyUnresolvedReferences
         polacz_wszystkie_btn.clicked.connect(self.polacz_wszystkie_miasta)
         controls.addWidget(polacz_wszystkie_btn)
 
         wyczysc_miasta_btn = QPushButton("Wyczyść miasta")
         wyczysc_miasta_btn.setStyleSheet("background-color: #FF5733; color: white;")
-        # noinspection PyUnresolvedReferences
         wyczysc_miasta_btn.clicked.connect(self.wyczysc_miasta)
         controls.addWidget(wyczysc_miasta_btn)
 
         wyczysc_btn = QPushButton("Wyczyść połączenia")
         wyczysc_btn.setStyleSheet("background-color: #FF5733; color: white;")
-        # noinspection PyUnresolvedReferences
         wyczysc_btn.clicked.connect(self.wyczysc_polaczenia)
         controls.addWidget(wyczysc_btn)
 
         generuj_btn = QPushButton("Generuj 5 losowych miast")
         generuj_btn.setStyleSheet("background-color: #FFEB3B;")
-        # noinspection PyUnresolvedReferences
         generuj_btn.clicked.connect(self.generuj_losowe_miasta)
         controls.addWidget(generuj_btn)
 
         znajdz_btn = QPushButton("Znajdź optymalną trasę (genetyczny)")
         znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
-        # noinspection PyUnresolvedReferences
         znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase_genetyczny(self))
         controls.addWidget(znajdz_btn)
 
         znajdz_btn2 = QPushButton("Znajdź optymalną trasę (najbliższego sąsiada)")
         znajdz_btn2.setStyleSheet("background-color: #B04CAD; color: white;")
-        # noinspection PyUnresolvedReferences
         znajdz_btn2.clicked.connect(lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self))
         controls.addWidget(znajdz_btn2)
 
         zapis_btn = QPushButton("Zapisz stan projektu")
         zapis_btn.setStyleSheet("background-color: #4CAF50; color: white;")
-        # noinspection PyUnresolvedReferences
         zapis_btn.clicked.connect(self.zapisz_stan_projektu)
         controls.addWidget(zapis_btn)
 
         wczytaj_btn = QPushButton("Wczytaj stan projektu")
         wczytaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
-        # noinspection PyUnresolvedReferences
         wczytaj_btn.clicked.connect(self.wczytaj_stan_projektu)
         controls.addWidget(wczytaj_btn)
 
@@ -165,30 +155,30 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def polacz_miasta(self) -> None:
-        m1: str = self.m1_input.text().strip()
-        m2: str = self.m2_input.text().strip()
+        miasto1: str = self.miasto1_input.text().strip()
+        miasto2: str = self.miasto2_input.text().strip()
 
-        if m1 == m2:
+        if miasto1 == miasto2:
             QMessageBox.warning(self, "Uwaga", "Nie można połączyć miasta z samym sobą.")
             return
 
-        if m1 in self.miasta and m2 in self.miasta:
-            if (m1, m2) not in self.drogi and (m2, m1) not in self.drogi:
-                self.drogi.append((m1, m2))
+        if miasto1 in self.miasta and miasto2 in self.miasta:
+            if (miasto1, miasto2) not in self.drogi and (miasto2, miasto1) not in self.drogi:
+                self.drogi.append((miasto1, miasto2))
                 self.rysuj_mape()
             else:
                 QMessageBox.information(self, "Info", "Miasta są już połączone.")
         else:
             QMessageBox.critical(self, "Błąd", "Podane miasta muszą istnieć.")
 
-        self.m1_input.clear()
-        self.m2_input.clear()
+        self.miasto1_input.clear()
+        self.miasto2_input.clear()
 
     def polacz_wszystkie_miasta(self) -> None:
         miasta_list: list[str] = list(self.miasta.keys())
-        for m1, m2 in combinations(miasta_list, 2):
-            if (m1, m2) not in self.drogi and (m2, m1) not in self.drogi:
-                self.drogi.append((m1, m2))
+        for miasto1, miasto2 in combinations(miasta_list, 2):
+            if (miasto1, miasto2) not in self.drogi and (miasto2, miasto1) not in self.drogi:
+                self.drogi.append((miasto1, miasto2))
         self.rysuj_mape()
 
     def wyczysc_miasta(self) -> None:
@@ -215,8 +205,8 @@ class KomiwojazerApp(QWidget):
             with open("stan_projektu.txt", "w") as f:
                 for nazwa, (x, y) in self.miasta.items():
                     f.write(f"{nazwa},{x},{y}\n")
-                for m1, m2 in self.drogi:
-                    f.write(f"{m1},{m2}\n")
+                for miasto1, miasto2 in self.drogi:
+                    f.write(f"{miasto1},{miasto2}\n")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać stanu projektu: {str(e)}")
 
@@ -231,8 +221,8 @@ class KomiwojazerApp(QWidget):
                         nazwa, x, y = parts
                         self.miasta[nazwa] = (float(x), float(y))
                     elif len(parts) == 2:
-                        m1, m2 = parts
-                        self.drogi.append((m1, m2))
+                        miasto1, miasto2 = parts
+                        self.drogi.append((miasto1, miasto2))
             self.rysuj_mape()
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać stanu projektu: {str(e)}")
@@ -246,21 +236,19 @@ class KomiwojazerApp(QWidget):
             self.ax.text(x + 0.3, y + 0.3, nazwa, fontsize=12, color='black',
                          fontweight='bold')
 
-        for m1, m2 in self.drogi:
-            x1, y1 = self.miasta[m1]
-            x2, y2 = self.miasta[m2]
-            self.ax.plot([x1, x2], [y1, y2], 'darkblue', linewidth=3)
+        for miasto1, miasto2 in self.drogi:
+            x1, y1 = self.miasta[miasto1]
+            x2, y2 = self.miasta[miasto2]
+            self.ax.plot([x1, x2], [y1, y2], 'darkblue', linewidth=2)
 
         if najlepsza_trasa:
-            for i in range(len(najlepsza_trasa)):
-                m1 = najlepsza_trasa[i]
-                m2 = najlepsza_trasa[(i + 1) % len(najlepsza_trasa)]
-                x1, y1 = self.miasta[m1]
-                x2, y2 = self.miasta[m2]
-                self.ax.plot([x1, x2], [y1, y2], 'limegreen', linewidth=4)
+            najlepsza_trasa_koord = [self.miasta[miasto] for miasto in najlepsza_trasa]
+            najlepsza_trasa_koord.append(najlepsza_trasa_koord[0])  # Zamykamy trasę
+            x_coords, y_coords = zip(*najlepsza_trasa_koord)
+            self.ax.plot(x_coords, y_coords, 'g-', linewidth=2)
 
-        self.ax.set_title("Mapa miast i trasa", fontsize=14, fontweight='bold')
+        self.ax.set_title("Mapa miast i połączeń", fontsize=16)
         self.ax.set_xlabel("X", fontsize=12)
         self.ax.set_ylabel("Y", fontsize=12)
-        self.ax.grid(True, linestyle='--', alpha=0.5)
+
         self.canvas.draw()
