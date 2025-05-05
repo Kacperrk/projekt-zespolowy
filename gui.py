@@ -112,6 +112,8 @@ class KomiwojazerApp(QWidget):
         znajdz_btn2.clicked.connect(lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self))
         controls.addWidget(znajdz_btn2)
 
+
+
         zapis_btn = QPushButton("Zapisz stan projektu")
         zapis_btn.setStyleSheet("background-color: #4CAF50; color: white;")
         zapis_btn.clicked.connect(self.zapisz_stan_projektu)
@@ -175,6 +177,10 @@ class KomiwojazerApp(QWidget):
         self.miasto2_input.clear()
 
     def polacz_wszystkie_miasta(self) -> None:
+        if not self.miasta:
+            QMessageBox.critical(self, "Błąd", "Brak miast do połączenia. Dodaj miasta najpierw.")
+            return
+
         miasta_list: list[str] = list(self.miasta.keys())
         for miasto1, miasto2 in combinations(miasta_list, 2):
             if (miasto1, miasto2) not in self.drogi and (miasto2, miasto1) not in self.drogi:
