@@ -193,6 +193,10 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def wyczysc_polaczenia(self) -> None:
+        if not self.drogi:
+            QMessageBox.critical(self, "Błąd", "Brak połączeń do wyczyszczenia.")
+            return
+
         self.drogi.clear()
         self.rysuj_mape()
 
