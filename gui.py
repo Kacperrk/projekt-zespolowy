@@ -4,7 +4,7 @@ from typing import Optional
 
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QMessageBox, QSplitter
+    QLineEdit, QPushButton, QMessageBox, QSplitter, QSizePolicy
 )
 from PyQt5.QtCore import Qt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -41,89 +41,58 @@ class KomiwojazerApp(QWidget):
         controls = QVBoxLayout()
 
         self.setStyleSheet("""
-            QWidget { font-size: 14pt; }
-            QLineEdit { padding: 6px; font-size: 14pt; }
-            QPushButton { padding: 10px; font-size: 14pt; }
-            QLabel { font-size: 14pt; font-weight: bold; }
+            QLabel { font-weight: bold; }
         """)
 
+        def configure_widget(widget):
+            size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            widget.setSizePolicy(size_policy)
+
         controls.addWidget(QLabel("Nazwa miasta:"))
+        configure_widget(self.nazwa_input)
         controls.addWidget(self.nazwa_input)
 
         controls.addWidget(QLabel("Współrzędna X:"))
+        configure_widget(self.x_input)
         controls.addWidget(self.x_input)
 
         controls.addWidget(QLabel("Współrzędna Y:"))
+        configure_widget(self.y_input)
         controls.addWidget(self.y_input)
 
-        dodaj_btn = QPushButton("Dodaj miasto")
-        dodaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
-        # noinspection PyUnresolvedReferences
-        dodaj_btn.clicked.connect(self.dodaj_miasto)
-        controls.addWidget(dodaj_btn)
+        def make_button(text: str, handler, style: str = "") -> QPushButton:
+            btn = QPushButton(text)
+            btn.setStyleSheet(style)
+            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            btn.setMinimumHeight(30)
+            # noinspection PyUnresolvedReferences
+            btn.clicked.connect(handler)
+            return btn
+
+        controls.addWidget(make_button("Dodaj miasto", self.dodaj_miasto, "background-color: #4CAF50; color: white;"))
 
         controls.addWidget(QLabel("Połącz miasta (podaj 2 nazwy):"))
+        configure_widget(self.miasto1_input)
         controls.addWidget(self.miasto1_input)
+        configure_widget(self.miasto2_input)
         controls.addWidget(self.miasto2_input)
 
-        polacz_btn = QPushButton("Połącz miasta")
-        polacz_btn.setStyleSheet("background-color: #2196F3; color: white;")
-        # noinspection PyUnresolvedReferences
-        polacz_btn.clicked.connect(self.polacz_miasta)
-        controls.addWidget(polacz_btn)
+        controls.addWidget(make_button("Połącz miasta", self.polacz_miasta, "background-color: #2196F3; color: white;"))
+        controls.addWidget(make_button("Połącz wszystkie miasta", self.polacz_wszystkie_miasta, "background-color: #2196F3; color: white;"))
+        controls.addWidget(make_button("Wyczyść miasta", self.wyczysc_miasta, "background-color: #FF5733; color: white;"))
+        controls.addWidget(make_button("Wyczyść połączenia", self.wyczysc_polaczenia, "background-color: #FF5733; color: white;"))
+        controls.addWidget(make_button("Generuj 5 losowych miast", self.generuj_losowe_miasta, "background-color: #FFEB3B;"))
+        controls.addWidget(make_button("Znajdź optymalną trasę (genetyczny)", lambda: znajdz_najlepsza_trase_genetyczny(self), "background-color: #B04CAD; color: white;"))
+        controls.addWidget(make_button("Znajdź optymalną trasę (najbliższego sąsiada)", lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self), "background-color: #B04CAD; color: white;"))
+        controls.addWidget(make_button("Zapisz stan projektu", self.zapisz_stan_projektu, "background-color: #4CAF50; color: white;"))
+        controls.addWidget(make_button("Wczytaj stan projektu", self.wczytaj_stan_projektu, "background-color: #4CAF50; color: white;"))
 
-        polacz_wszystkie_btn = QPushButton("Połącz wszystkie miasta")
-        polacz_wszystkie_btn.setStyleSheet("background-color: #2196F3; color: white;")
-        # noinspection PyUnresolvedReferences
-        polacz_wszystkie_btn.clicked.connect(self.polacz_wszystkie_miasta)
-        controls.addWidget(polacz_wszystkie_btn)
-
-        wyczysc_miasta_btn = QPushButton("Wyczyść miasta")
-        wyczysc_miasta_btn.setStyleSheet("background-color: #FF5733; color: white;")
-        # noinspection PyUnresolvedReferences
-        wyczysc_miasta_btn.clicked.connect(self.wyczysc_miasta)
-        controls.addWidget(wyczysc_miasta_btn)
-
-        wyczysc_btn = QPushButton("Wyczyść połączenia")
-        wyczysc_btn.setStyleSheet("background-color: #FF5733; color: white;")
-        # noinspection PyUnresolvedReferences
-        wyczysc_btn.clicked.connect(self.wyczysc_polaczenia)
-        controls.addWidget(wyczysc_btn)
-
-        generuj_btn = QPushButton("Generuj 5 losowych miast")
-        generuj_btn.setStyleSheet("background-color: #FFEB3B;")
-        # noinspection PyUnresolvedReferences
-        generuj_btn.clicked.connect(self.generuj_losowe_miasta)
-        controls.addWidget(generuj_btn)
-
-        znajdz_btn = QPushButton("Znajdź optymalną trasę (genetyczny)")
-        znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
-        # noinspection PyUnresolvedReferences
-        znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase_genetyczny(self))
-        controls.addWidget(znajdz_btn)
-
-        znajdz_btn2 = QPushButton("Znajdź optymalną trasę (najbliższego sąsiada)")
-        znajdz_btn2.setStyleSheet("background-color: #B04CAD; color: white;")
-        # noinspection PyUnresolvedReferences
-        znajdz_btn2.clicked.connect(lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self))
-        controls.addWidget(znajdz_btn2)
-
-        zapis_btn = QPushButton("Zapisz stan projektu")
-        zapis_btn.setStyleSheet("background-color: #4CAF50; color: white;")
-        # noinspection PyUnresolvedReferences
-        zapis_btn.clicked.connect(self.zapisz_stan_projektu)
-        controls.addWidget(zapis_btn)
-
-        wczytaj_btn = QPushButton("Wczytaj stan projektu")
-        wczytaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
-        # noinspection PyUnresolvedReferences
-        wczytaj_btn.clicked.connect(self.wczytaj_stan_projektu)
-        controls.addWidget(wczytaj_btn)
+        # Dodaj stretch na koniec, by layout był rozciągliwy
+        controls.addStretch()
 
         splitter = QSplitter(Qt.Horizontal)
         controls_widget = QWidget()
         controls_widget.setLayout(controls)
-
         splitter.addWidget(controls_widget)
         splitter.addWidget(self.canvas)
         splitter.setSizes([400, 800])
@@ -247,7 +216,7 @@ class KomiwojazerApp(QWidget):
 
         if najlepsza_trasa:
             wspolrzedne = [self.miasta[n] for n in najlepsza_trasa]
-            wspolrzedne.append(wspolrzedne[0])  # Zamknięcie trasy
+            wspolrzedne.append(wspolrzedne[0])
             x_coords, y_coords = zip(*wspolrzedne)
             self.ax.plot(x_coords, y_coords, 'g-', linewidth=2)
 
