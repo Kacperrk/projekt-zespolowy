@@ -8,7 +8,6 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 
@@ -17,25 +16,13 @@ from algorytm import znajdz_najlepsza_trase_najblizszego_sasiada
 
 
 class KomiwojazerApp(QWidget):
-    miasta: dict[str, tuple[float, float]]
-    drogi: list[tuple[str, str]]
-
-    nazwa_input: QLineEdit
-    x_input: QLineEdit
-    y_input: QLineEdit
-    miasto1_input: QLineEdit
-    miasto2_input: QLineEdit
-
-    figure: Figure
-    ax: Axes
-    canvas: FigureCanvas
-
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Problem Komiwojażera - PyQt5")
         self.resize(1200, 800)
-        self.miasta = {}
-        self.drogi = []
+
+        self.miasta: dict[str, tuple[float, float]] = {}
+        self.drogi: list[tuple[str, str]] = []
 
         self.nazwa_input = QLineEdit()
         self.x_input = QLineEdit()
@@ -43,7 +30,8 @@ class KomiwojazerApp(QWidget):
         self.miasto1_input = QLineEdit()
         self.miasto2_input = QLineEdit()
 
-        self.figure, self.ax = plt.subplots()
+        self.figure = Figure()
+        self.ax: Axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self.figure)
 
         self.init_ui()
@@ -70,6 +58,7 @@ class KomiwojazerApp(QWidget):
 
         dodaj_btn = QPushButton("Dodaj miasto")
         dodaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        # noinspection PyUnresolvedReferences
         dodaj_btn.clicked.connect(self.dodaj_miasto)
         controls.addWidget(dodaj_btn)
 
@@ -79,48 +68,55 @@ class KomiwojazerApp(QWidget):
 
         polacz_btn = QPushButton("Połącz miasta")
         polacz_btn.setStyleSheet("background-color: #2196F3; color: white;")
+        # noinspection PyUnresolvedReferences
         polacz_btn.clicked.connect(self.polacz_miasta)
         controls.addWidget(polacz_btn)
 
         polacz_wszystkie_btn = QPushButton("Połącz wszystkie miasta")
         polacz_wszystkie_btn.setStyleSheet("background-color: #2196F3; color: white;")
+        # noinspection PyUnresolvedReferences
         polacz_wszystkie_btn.clicked.connect(self.polacz_wszystkie_miasta)
         controls.addWidget(polacz_wszystkie_btn)
 
         wyczysc_miasta_btn = QPushButton("Wyczyść miasta")
         wyczysc_miasta_btn.setStyleSheet("background-color: #FF5733; color: white;")
+        # noinspection PyUnresolvedReferences
         wyczysc_miasta_btn.clicked.connect(self.wyczysc_miasta)
         controls.addWidget(wyczysc_miasta_btn)
 
         wyczysc_btn = QPushButton("Wyczyść połączenia")
         wyczysc_btn.setStyleSheet("background-color: #FF5733; color: white;")
+        # noinspection PyUnresolvedReferences
         wyczysc_btn.clicked.connect(self.wyczysc_polaczenia)
         controls.addWidget(wyczysc_btn)
 
         generuj_btn = QPushButton("Generuj 5 losowych miast")
         generuj_btn.setStyleSheet("background-color: #FFEB3B;")
+        # noinspection PyUnresolvedReferences
         generuj_btn.clicked.connect(self.generuj_losowe_miasta)
         controls.addWidget(generuj_btn)
 
         znajdz_btn = QPushButton("Znajdź optymalną trasę (genetyczny)")
         znajdz_btn.setStyleSheet("background-color: #B04CAD; color: white;")
+        # noinspection PyUnresolvedReferences
         znajdz_btn.clicked.connect(lambda: znajdz_najlepsza_trase_genetyczny(self))
         controls.addWidget(znajdz_btn)
 
         znajdz_btn2 = QPushButton("Znajdź optymalną trasę (najbliższego sąsiada)")
         znajdz_btn2.setStyleSheet("background-color: #B04CAD; color: white;")
+        # noinspection PyUnresolvedReferences
         znajdz_btn2.clicked.connect(lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self))
         controls.addWidget(znajdz_btn2)
 
-
-
         zapis_btn = QPushButton("Zapisz stan projektu")
         zapis_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        # noinspection PyUnresolvedReferences
         zapis_btn.clicked.connect(self.zapisz_stan_projektu)
         controls.addWidget(zapis_btn)
 
         wczytaj_btn = QPushButton("Wczytaj stan projektu")
         wczytaj_btn.setStyleSheet("background-color: #4CAF50; color: white;")
+        # noinspection PyUnresolvedReferences
         wczytaj_btn.clicked.connect(self.wczytaj_stan_projektu)
         controls.addWidget(wczytaj_btn)
 
@@ -137,10 +133,10 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def dodaj_miasto(self) -> None:
-        nazwa: str = self.nazwa_input.text().strip()
+        nazwa = self.nazwa_input.text().strip()
         try:
-            x: float = float(self.x_input.text().strip())
-            y: float = float(self.y_input.text().strip())
+            x = float(self.x_input.text().strip())
+            y = float(self.y_input.text().strip())
         except ValueError:
             QMessageBox.critical(self, "Błąd", "Wprowadź poprawne współrzędne.")
             return
@@ -157,8 +153,8 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def polacz_miasta(self) -> None:
-        miasto1: str = self.miasto1_input.text().strip()
-        miasto2: str = self.miasto2_input.text().strip()
+        miasto1 = self.miasto1_input.text().strip()
+        miasto2 = self.miasto2_input.text().strip()
 
         if miasto1 == miasto2:
             QMessageBox.warning(self, "Uwaga", "Nie można połączyć miasta z samym sobą.")
@@ -181,7 +177,7 @@ class KomiwojazerApp(QWidget):
             QMessageBox.critical(self, "Błąd", "Brak miast do połączenia. Dodaj miasta najpierw.")
             return
 
-        miasta_list: list[str] = list(self.miasta.keys())
+        miasta_list = list(self.miasta.keys())
         for miasto1, miasto2 in combinations(miasta_list, 2):
             if (miasto1, miasto2) not in self.drogi and (miasto2, miasto1) not in self.drogi:
                 self.drogi.append((miasto1, miasto2))
@@ -201,11 +197,11 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def generuj_losowe_miasta(self) -> None:
-        start_index: int = len(self.miasta) + 1
+        start_index = len(self.miasta) + 1
         for i in range(5):
-            nazwa: str = f"Miasto{start_index + i}"
-            x: int = random.randint(0, 50)
-            y: int = random.randint(0, 50)
+            nazwa = f"Miasto{start_index + i}"
+            x = random.randint(0, 50)
+            y = random.randint(0, 50)
             self.miasta[nazwa] = (x, y)
         self.drogi.clear()
         self.rysuj_mape()
@@ -241,10 +237,8 @@ class KomiwojazerApp(QWidget):
         self.ax.clear()
 
         for nazwa, (x, y) in self.miasta.items():
-            self.ax.plot(x, y, 'ro', markersize=12, markeredgewidth=2,
-                         markeredgecolor='black')
-            self.ax.text(x + 0.3, y + 0.3, nazwa, fontsize=12, color='black',
-                         fontweight='bold')
+            self.ax.plot(x, y, 'ro', markersize=12, markeredgewidth=2, markeredgecolor='black')
+            self.ax.text(x + 0.3, y + 0.3, nazwa, fontsize=12, color='black', fontweight='bold')
 
         for miasto1, miasto2 in self.drogi:
             x1, y1 = self.miasta[miasto1]
@@ -252,9 +246,9 @@ class KomiwojazerApp(QWidget):
             self.ax.plot([x1, x2], [y1, y2], 'darkblue', linewidth=2)
 
         if najlepsza_trasa:
-            najlepsza_trasa_koord = [self.miasta[miasto] for miasto in najlepsza_trasa]
-            najlepsza_trasa_koord.append(najlepsza_trasa_koord[0])  # Zamykamy trasę
-            x_coords, y_coords = zip(*najlepsza_trasa_koord)
+            wspolrzedne = [self.miasta[n] for n in najlepsza_trasa]
+            wspolrzedne.append(wspolrzedne[0])  # Zamknięcie trasy
+            x_coords, y_coords = zip(*wspolrzedne)
             self.ax.plot(x_coords, y_coords, 'g-', linewidth=2)
 
         self.ax.set_title("Mapa miast i połączeń", fontsize=16)
