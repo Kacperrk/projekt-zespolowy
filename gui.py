@@ -87,7 +87,6 @@ class KomiwojazerApp(QWidget):
         controls.addWidget(make_button("Zapisz stan projektu", self.zapisz_stan_projektu, "background-color: #4CAF50; color: white;"))
         controls.addWidget(make_button("Wczytaj stan projektu", self.wczytaj_stan_projektu, "background-color: #4CAF50; color: white;"))
 
-        # Dodaj stretch na koniec, by layout był rozciągliwy
         controls.addStretch()
 
         splitter = QSplitter(Qt.Horizontal)
