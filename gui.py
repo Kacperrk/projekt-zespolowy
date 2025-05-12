@@ -81,7 +81,7 @@ class KomiwojazerApp(QWidget):
         controls.addWidget(make_button("Połącz wszystkie miasta", self.polacz_wszystkie_miasta, "background-color: #2196F3; color: white;"))
         controls.addWidget(make_button("Wyczyść miasta", self.wyczysc_miasta, "background-color: #FF5733; color: white;"))
         controls.addWidget(make_button("Wyczyść połączenia", self.wyczysc_polaczenia, "background-color: #FF5733; color: white;"))
-        controls.addWidget(make_button("Generuj 5 losowych miast", self.generuj_losowe_miasta, "background-color: #FFEB3B;"))
+        controls.addWidget(make_button("Dodaj 5 losowych miast", self.generuj_losowe_miasta, "background-color: #FFEB3B;"))
         controls.addWidget(make_button("Znajdź optymalną trasę (genetyczny)", lambda: znajdz_najlepsza_trase_genetyczny(self), "background-color: #B04CAD; color: white;"))
         controls.addWidget(make_button("Znajdź optymalną trasę (najbliższego sąsiada)", lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self), "background-color: #B04CAD; color: white;"))
         controls.addWidget(make_button("Zapisz stan projektu", self.zapisz_stan_projektu, "background-color: #4CAF50; color: white;"))
