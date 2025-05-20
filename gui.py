@@ -118,6 +118,10 @@ class KomiwojazerApp(QWidget):
         self.setLayout(layout)
         self.rysuj_mape()
 
+
+        self.wybrane_miasto_input.textChanged.connect(lambda: self.rysuj_mape())
+
+
     def dodaj_miasto(self) -> None:
         nazwa = self.nazwa_input.text().strip()
         try:
@@ -222,8 +226,13 @@ class KomiwojazerApp(QWidget):
     def rysuj_mape(self, najlepsza_trasa: Optional[list[str]] = None) -> None:
         self.ax.clear()
 
+        wybrane_miasto = self.wybrane_miasto_input.text().strip()
+
         for nazwa, (x, y) in self.miasta.items():
-            self.ax.plot(x, y, 'ro', markersize=12, markeredgewidth=2, markeredgecolor='black')
+            if nazwa == wybrane_miasto:
+                self.ax.plot(x, y, 'bo', markersize=15, markeredgewidth=2, markeredgecolor='black')
+            else:
+                self.ax.plot(x, y, 'ro', markersize=12, markeredgewidth=2, markeredgecolor='black')
             self.ax.text(x + 0.3, y + 0.3, nazwa, fontsize=12, color='black', fontweight='bold')
 
         for miasto1, miasto2 in self.drogi:

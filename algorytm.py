@@ -15,6 +15,7 @@ def zapisz_trase_od_podanej_nazwy(self, trasa: list[str], start: str) -> None:
     linijka_do_pliku = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
 
     print("Wybrana trasa:\n" + linijka_do_pliku)
+    QMessageBox.information(self, "Wybrana trasa", linijka_do_pliku)
 
     try:
         with open("wybrane.txt", "w") as file:
