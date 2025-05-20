@@ -3,10 +3,32 @@ import random
 from PyQt5.QtWidgets import QMessageBox
 
 
+def zapisz_trase_od_podanej_nazwy(self, trasa: list[str], start: str) -> None:
+    if not trasa or start not in trasa:
+        QMessageBox.warning(self, "Uwaga", "Trasa jest pusta lub nie zawiera podanego miasta")
+        return
+
+    idx = trasa.index(start)
+    obrocona_trasa = trasa[idx:] + trasa[:idx]
+    calkowita_odleglosc = dystans(self.miasta, obrocona_trasa)
+    trasa_jako_tekst = " -> ".join(obrocona_trasa)
+    linijka_do_pliku = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
+
+    print("Wybrana trasa:\n" + linijka_do_pliku)
+
+    try:
+        with open("wybrane.txt", "w") as file:
+            file.write(linijka_do_pliku)
+    except Exception as e:
+        QMessageBox.critical(self, "Błąd zapisu", f"Nie udało się zapisać trasy: {str(e)}")
+
+
 def zapisz_najlepsza_trase_do_pliku(self, najlepsza: list[str]) -> None:
     calkowita_odleglosc: float = dystans(self.miasta, najlepsza)
     trasa_jako_tekst: str = " -> ".join(najlepsza)
     linijka_do_pliku: str = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
+
+    print(linijka_do_pliku)
 
     try:
         with open("najlepsze_trasy.txt", "a") as file:
@@ -59,14 +81,14 @@ def znajdz_najlepsza_trase_genetyczny(self, pokolenia: int = 500, populacja_rozm
         obecny_dystans: float = dystans(self.miasta, nowa_populacja[0])
 
         if (abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans < 0.001:
-            print(f"obecny % stagnacji: {(abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans}")
+            # print(f"obecny % stagnacji: {(abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans}")
             stagnacja_licznik += 1
         else:
             stagnacja_licznik = 0
             najlepszy_dystans = obecny_dystans
 
         if stagnacja_licznik >= max_stagnacja:
-            print(f"\n\nZakończono po {epoka + 1} pokoleniach z powodu stabilności rozwiązania\n\n")
+            # print(f"\n\nZakończono po {epoka + 1} pokoleniach z powodu stabilności rozwiązania\n\n")
             break
 
         while len(nowa_populacja) < populacja_rozmiar:
@@ -80,6 +102,8 @@ def znajdz_najlepsza_trase_genetyczny(self, pokolenia: int = 500, populacja_rozm
     najlepsza: list[str] = min(populacja, key=lambda trasa: dystans(self.miasta, trasa))
     self.rysuj_mape(najlepsza)
     zapisz_najlepsza_trase_do_pliku(self, najlepsza)
+
+    self.ostatnia_trasa = najlepsza
 
 
 def znajdz_najlepsza_trase_najblizszego_sasiada(self) -> None:
@@ -119,3 +143,5 @@ def znajdz_najlepsza_trase_najblizszego_sasiada(self) -> None:
 
     self.rysuj_mape(najlepsza_trasa)
     zapisz_najlepsza_trase_do_pliku(self, najlepsza_trasa)
+
+    self.ostatnia_trasa = najlepsza_trasa

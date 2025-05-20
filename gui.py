@@ -34,7 +34,13 @@ class KomiwojazerApp(QWidget):
         self.ax: Axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self.figure)
 
+
+        self.ostatnia_trasa: list[str] = []
+        self.wybrane_miasto_input = QLineEdit()
+
+
         self.init_ui()
+
 
     def init_ui(self) -> None:
         layout = QHBoxLayout()
@@ -86,6 +92,18 @@ class KomiwojazerApp(QWidget):
         controls.addWidget(make_button("Znajdź optymalną trasę (najbliższego sąsiada)", lambda: znajdz_najlepsza_trase_najblizszego_sasiada(self), "background-color: #B04CAD; color: white;"))
         controls.addWidget(make_button("Zapisz stan projektu", self.zapisz_stan_projektu, "background-color: #4CAF50; color: white;"))
         controls.addWidget(make_button("Wczytaj stan projektu", self.wczytaj_stan_projektu, "background-color: #4CAF50; color: white;"))
+
+
+
+
+        configure_widget(self.wybrane_miasto_input)
+        controls.addWidget(QLabel("Nazwa miasta dla wyjścia do wybrane.txt:"))
+        controls.addWidget(self.wybrane_miasto_input)
+
+        controls.addWidget(make_button("Zapisz trasę z wybranego miasta", self.zapisz_wybrane,"background-color: #2196F3; color: white;"))
+
+
+
 
         controls.addStretch()
 
@@ -224,3 +242,12 @@ class KomiwojazerApp(QWidget):
         self.ax.set_ylabel("Y", fontsize=12)
 
         self.canvas.draw()
+
+
+    def zapisz_wybrane(self) -> None:
+        start = self.wybrane_miasto_input.text().strip()
+        if not self.ostatnia_trasa:
+            QMessageBox.warning(self, "Uwaga", "Brak zapisanej trasy")
+            return
+        from algorytm import zapisz_trase_od_podanej_nazwy
+        zapisz_trase_od_podanej_nazwy(self, self.ostatnia_trasa, start)
