@@ -48,6 +48,7 @@ class KomiwojazerApp(QWidget):
             QLabel { font-weight: bold; }
         """)
 
+
         def configure_widget(widget):
             size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             widget.setSizePolicy(size_policy)
@@ -64,6 +65,7 @@ class KomiwojazerApp(QWidget):
         configure_widget(self.y_input)
         controls.addWidget(self.y_input)
 
+
         def make_button(text: str, handler, style: str = "") -> QPushButton:
             btn = QPushButton(text)
             btn.setStyleSheet(style)
@@ -72,6 +74,7 @@ class KomiwojazerApp(QWidget):
             # noinspection PyUnresolvedReferences
             btn.clicked.connect(handler)
             return btn
+
 
         controls.addWidget(make_button("Dodaj miasto", self.dodaj_miasto, "background-color: #4CAF50; color: white;"))
 
@@ -91,17 +94,10 @@ class KomiwojazerApp(QWidget):
         controls.addWidget(make_button("Zapisz stan projektu", self.zapisz_stan_projektu, "background-color: #4CAF50; color: white;"))
         controls.addWidget(make_button("Wczytaj stan projektu", self.wczytaj_stan_projektu, "background-color: #4CAF50; color: white;"))
 
-
-
-
         configure_widget(self.wybrane_miasto_input)
         controls.addWidget(QLabel("Nazwa miasta dla wyjścia do wybrane.txt:"))
         controls.addWidget(self.wybrane_miasto_input)
-
         controls.addWidget(make_button("Zapisz trasę z wybranego miasta", self.zapisz_wybrane,"background-color: #2196F3; color: white;"))
-
-
-
 
         controls.addStretch()
 
@@ -116,7 +112,7 @@ class KomiwojazerApp(QWidget):
         self.setLayout(layout)
         self.rysuj_mape()
 
-
+        # noinspection PyUnresolvedReferences
         self.wybrane_miasto_input.textChanged.connect(lambda: self.rysuj_mape())
 
 
@@ -128,11 +124,11 @@ class KomiwojazerApp(QWidget):
             x = float(self.x_input.text().strip())
             y = float(self.y_input.text().strip())
         except ValueError:
-            QMessageBox.critical(self, "Błąd", "Wprowadź poprawne współrzędne.")
+            QMessageBox.critical(self, "Błąd", "Wprowadź poprawne współrzędne")
             return
 
         if nazwa in self.miasta:
-            QMessageBox.warning(self, "Uwaga", "Miasto o tej nazwie już istnieje.")
+            QMessageBox.warning(self, "Uwaga", "Miasto o tej nazwie już istnieje")
             return
 
         self.miasta[nazwa] = (x, y)
@@ -142,6 +138,7 @@ class KomiwojazerApp(QWidget):
         self.y_input.clear()
         self.rysuj_mape()
 
+
     def polacz_miasta(self) -> None:
         self.wyczysc_najlepsza_trase()
 
@@ -149,7 +146,7 @@ class KomiwojazerApp(QWidget):
         miasto2 = self.miasto2_input.text().strip()
 
         if miasto1 == miasto2:
-            QMessageBox.warning(self, "Uwaga", "Nie można połączyć miasta z samym sobą.")
+            QMessageBox.warning(self, "Uwaga", "Nie można połączyć miasta z samym sobą")
             return
 
         if miasto1 in self.miasta and miasto2 in self.miasta:
@@ -157,18 +154,19 @@ class KomiwojazerApp(QWidget):
                 self.drogi.append((miasto1, miasto2))
                 self.rysuj_mape()
             else:
-                QMessageBox.information(self, "Info", "Miasta są już połączone.")
+                QMessageBox.information(self, "Info", "Miasta są już połączone")
         else:
-            QMessageBox.critical(self, "Błąd", "Podane miasta muszą istnieć.")
+            QMessageBox.critical(self, "Błąd", "Podane miasta muszą istnieć")
 
         self.miasto1_input.clear()
         self.miasto2_input.clear()
+
 
     def polacz_wszystkie_miasta(self) -> None:
         self.wyczysc_najlepsza_trase()
 
         if not self.miasta:
-            QMessageBox.critical(self, "Błąd", "Brak miast do połączenia. Dodaj miasta najpierw.")
+            QMessageBox.critical(self, "Błąd", "Brak miast do połączenia. Dodaj miasta najpierw")
             return
 
         miasta_list = list(self.miasta.keys())
@@ -177,6 +175,7 @@ class KomiwojazerApp(QWidget):
                 self.drogi.append((miasto1, miasto2))
         self.rysuj_mape()
 
+
     def wyczysc_miasta(self) -> None:
         self.wyczysc_najlepsza_trase()
 
@@ -184,15 +183,17 @@ class KomiwojazerApp(QWidget):
         self.miasta.clear()
         self.rysuj_mape()
 
+
     def wyczysc_polaczenia(self) -> None:
         self.wyczysc_najlepsza_trase()
 
         if not self.drogi:
-            QMessageBox.critical(self, "Błąd", "Brak połączeń do wyczyszczenia.")
+            QMessageBox.critical(self, "Błąd", "Brak połączeń do wyczyszczenia")
             return
 
         self.drogi.clear()
         self.rysuj_mape()
+
 
     def generuj_losowe_miasta(self) -> None:
         self.wyczysc_najlepsza_trase()
@@ -206,6 +207,7 @@ class KomiwojazerApp(QWidget):
         self.drogi.clear()
         self.rysuj_mape()
 
+
     def zapisz_stan_projektu(self) -> None:
         try:
             with open("stan_projektu.txt", "w") as f:
@@ -215,6 +217,8 @@ class KomiwojazerApp(QWidget):
                     f.write(f"{miasto1},{miasto2}\n")
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się zapisać stanu projektu: {str(e)}")
+            return
+
 
     def wczytaj_stan_projektu(self) -> None:
         try:
@@ -232,6 +236,8 @@ class KomiwojazerApp(QWidget):
             self.rysuj_mape()
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać stanu projektu: {str(e)}")
+            return
+
 
     def rysuj_mape(self) -> None:
         self.ax.clear()
@@ -240,21 +246,21 @@ class KomiwojazerApp(QWidget):
 
         for nazwa, (x, y) in self.miasta.items():
             if nazwa == wybrane_miasto:
-                self.ax.plot(x, y, 'bo', markersize=15, markeredgewidth=2, markeredgecolor='black')
+                self.ax.plot(x, y, "bo", markersize=15, markeredgewidth=2, markeredgecolor="black")
             else:
-                self.ax.plot(x, y, 'ro', markersize=12, markeredgewidth=2, markeredgecolor='black')
-            self.ax.text(x + 0.3, y + 0.3, nazwa, fontsize=12, color='black', fontweight='bold')
+                self.ax.plot(x, y, "ro", markersize=12, markeredgewidth=2, markeredgecolor="black")
+            self.ax.text(x + 0.3, y + 0.3, nazwa, fontsize=12, color="black", fontweight="bold")
 
         for miasto1, miasto2 in self.drogi:
             x1, y1 = self.miasta[miasto1]
             x2, y2 = self.miasta[miasto2]
-            self.ax.plot([x1, x2], [y1, y2], 'darkblue', linewidth=2)
+            self.ax.plot([x1, x2], [y1, y2], "darkblue", linewidth=2)
 
         if self.najlepsza_trasa:
             wspolrzedne = [self.miasta[n] for n in self.najlepsza_trasa]
             wspolrzedne.append(wspolrzedne[0])
             x_coords, y_coords = zip(*wspolrzedne)
-            self.ax.plot(x_coords, y_coords, 'g-', linewidth=2)
+            self.ax.plot(x_coords, y_coords, "g-", linewidth=2)
 
         self.ax.set_title("Mapa miast i połączeń", fontsize=16)
         self.ax.set_xlabel("X", fontsize=12)

@@ -14,13 +14,14 @@ def zapisz_trase_od_podanej_nazwy(self, start: str) -> None:
     trasa_jako_tekst = " -> ".join(obrocona_trasa)
     linijka_do_pliku = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
 
-    QMessageBox.information(self, "Wybrana trasa", linijka_do_pliku)
-
     try:
         with open("wybrane.txt", "w") as file:
             file.write(linijka_do_pliku)
     except Exception as e:
         QMessageBox.critical(self, "Błąd zapisu", f"Nie udało się zapisać trasy: {str(e)}")
+        return
+
+    QMessageBox.information(self, "Wybrana trasa", linijka_do_pliku)
 
 
 def zapisz_najlepsza_trase_do_pliku(self) -> None:
@@ -33,6 +34,7 @@ def zapisz_najlepsza_trase_do_pliku(self) -> None:
             file.write(linijka_do_pliku)
     except Exception as e:
         QMessageBox.critical(self, "Błąd zapisu", f"Nie udało się zapisać trasy: {str(e)}")
+        return
 
 
 def dystans(miasta: dict[str, tuple[float, float]], trasa: list[str]) -> float:
@@ -68,7 +70,7 @@ def znajdz_najlepsza_trase_genetyczny(self, pokolenia: int = 500, populacja_rozm
 
     populacja: list[list[str]] = [random.sample(miasta_lista, len(miasta_lista)) for _ in range(populacja_rozmiar)]
 
-    najlepszy_dystans: float = float('inf')
+    najlepszy_dystans: float = float("inf")
     stagnacja_licznik: int = 0
     max_stagnacja: int = 50
 
@@ -113,6 +115,7 @@ def znajdz_najlepsza_trase_najblizszego_sasiada(self) -> None:
 
     nazwy: list[str] = list(miasta.keys())
 
+
     def najblizszy_sasiad(start: str) -> list[str]:
         nieodwiedzone: set[str] = set(nazwy)
         trasa: list[str] = [start]
@@ -130,8 +133,9 @@ def znajdz_najlepsza_trase_najblizszego_sasiada(self) -> None:
             nieodwiedzone.remove(najblizsze)
         return trasa
 
+
     najlepsza_trasa: list[str] = []
-    najlepszy_dystans: float = float('inf')
+    najlepszy_dystans: float = float("inf")
     for start in nazwy:
         trasa: list[str] = najblizszy_sasiad(start)
         dist: float = dystans(miasta, trasa)
