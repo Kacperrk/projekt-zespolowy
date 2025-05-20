@@ -58,7 +58,7 @@ def znajdz_najlepsza_trase_genetyczny(self, pokolenia: int = 500, populacja_rozm
 
         obecny_dystans: float = dystans(self.miasta, nowa_populacja[0])
 
-        if (abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans < 0.01:
+        if (abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans < 0.001:
             print(f"obecny % stagnacji: {(abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans}")
             stagnacja_licznik += 1
         else:
