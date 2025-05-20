@@ -14,7 +14,6 @@ def zapisz_trase_od_podanej_nazwy(self, start: str) -> None:
     trasa_jako_tekst = " -> ".join(obrocona_trasa)
     linijka_do_pliku = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
 
-    print("Wybrana trasa:\n" + linijka_do_pliku)
     QMessageBox.information(self, "Wybrana trasa", linijka_do_pliku)
 
     try:
@@ -28,8 +27,6 @@ def zapisz_najlepsza_trase_do_pliku(self) -> None:
     calkowita_odleglosc: float = dystans(self.miasta, self.najlepsza_trasa)
     trasa_jako_tekst: str = " -> ".join(self.najlepsza_trasa)
     linijka_do_pliku: str = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
-
-    print(linijka_do_pliku)
 
     try:
         with open("najlepsze_trasy.txt", "a") as file:
@@ -82,14 +79,14 @@ def znajdz_najlepsza_trase_genetyczny(self, pokolenia: int = 500, populacja_rozm
         obecny_dystans: float = dystans(self.miasta, nowa_populacja[0])
 
         if (abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans < 0.001:
-            # print(f"obecny % stagnacji: {(abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans}")
+            print(f"obecny % stagnacji: {(abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans}")
             stagnacja_licznik += 1
         else:
             stagnacja_licznik = 0
             najlepszy_dystans = obecny_dystans
 
         if stagnacja_licznik >= max_stagnacja:
-            # print(f"\n\nZakończono po {epoka + 1} pokoleniach z powodu stabilności rozwiązania\n\n")
+            print(f"\n\nZakończono po {epoka + 1} pokoleniach z powodu stabilności rozwiązania\n\n")
             break
 
         while len(nowa_populacja) < populacja_rozmiar:
