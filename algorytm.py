@@ -3,13 +3,13 @@ import random
 from PyQt5.QtWidgets import QMessageBox
 
 
-def zapisz_trase_od_podanej_nazwy(self, najlepsza_trasa: list[str], start: str) -> None:
-    if not najlepsza_trasa or start not in najlepsza_trasa:
+def zapisz_trase_od_podanej_nazwy(self, start: str) -> None:
+    if not self.najlepsza_trasa or start not in self.najlepsza_trasa:
         QMessageBox.warning(self, "Uwaga", "Trasa jest pusta lub nie zawiera podanego miasta")
         return
 
-    idx = najlepsza_trasa.index(start)
-    obrocona_trasa = najlepsza_trasa[idx:] + najlepsza_trasa[:idx]
+    idx = self.najlepsza_trasa.index(start)
+    obrocona_trasa = self.najlepsza_trasa[idx:] + self.najlepsza_trasa[:idx]
     calkowita_odleglosc = dystans(self.miasta, obrocona_trasa)
     trasa_jako_tekst = " -> ".join(obrocona_trasa)
     linijka_do_pliku = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
@@ -24,9 +24,9 @@ def zapisz_trase_od_podanej_nazwy(self, najlepsza_trasa: list[str], start: str) 
         QMessageBox.critical(self, "Błąd zapisu", f"Nie udało się zapisać trasy: {str(e)}")
 
 
-def zapisz_najlepsza_trase_do_pliku(self, najlepsza_trasa: list[str]) -> None:
-    calkowita_odleglosc: float = dystans(self.miasta, najlepsza_trasa)
-    trasa_jako_tekst: str = " -> ".join(najlepsza_trasa)
+def zapisz_najlepsza_trase_do_pliku(self) -> None:
+    calkowita_odleglosc: float = dystans(self.miasta, self.najlepsza_trasa)
+    trasa_jako_tekst: str = " -> ".join(self.najlepsza_trasa)
     linijka_do_pliku: str = f"{trasa_jako_tekst}\nSuma odległości: {calkowita_odleglosc:.2f}\n\n"
 
     print(linijka_do_pliku)
@@ -100,11 +100,11 @@ def znajdz_najlepsza_trase_genetyczny(self, pokolenia: int = 500, populacja_rozm
 
         populacja = nowa_populacja
 
-    najlepsza_trasa: list[str] = min(populacja, key=lambda trasa: dystans(self.miasta, trasa))
-    self.rysuj_mape(najlepsza_trasa)
-    zapisz_najlepsza_trase_do_pliku(self, najlepsza_trasa)
+    self.najlepsza_trasa = min(populacja, key=lambda trasa: dystans(self.miasta, trasa))
 
-    self.najlepsza_trasa = najlepsza_trasa
+    self.rysuj_mape()
+
+    zapisz_najlepsza_trase_do_pliku(self)
 
 
 def znajdz_najlepsza_trase_najblizszego_sasiada(self) -> None:
@@ -142,7 +142,8 @@ def znajdz_najlepsza_trase_najblizszego_sasiada(self) -> None:
             najlepszy_dystans = dist
             najlepsza_trasa = trasa
 
-    self.rysuj_mape(najlepsza_trasa)
-    zapisz_najlepsza_trase_do_pliku(self, najlepsza_trasa)
-
     self.najlepsza_trasa = najlepsza_trasa
+
+    self.rysuj_mape()
+
+    zapisz_najlepsza_trase_do_pliku(self)

@@ -1,6 +1,5 @@
 import random
 from itertools import combinations
-from typing import Optional
 
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
@@ -122,6 +121,8 @@ class KomiwojazerApp(QWidget):
 
 
     def dodaj_miasto(self) -> None:
+        self.wyczysc_najlepsza_trase()
+
         nazwa = self.nazwa_input.text().strip()
         try:
             x = float(self.x_input.text().strip())
@@ -142,6 +143,8 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def polacz_miasta(self) -> None:
+        self.wyczysc_najlepsza_trase()
+
         miasto1 = self.miasto1_input.text().strip()
         miasto2 = self.miasto2_input.text().strip()
 
@@ -162,6 +165,8 @@ class KomiwojazerApp(QWidget):
         self.miasto2_input.clear()
 
     def polacz_wszystkie_miasta(self) -> None:
+        self.wyczysc_najlepsza_trase()
+
         if not self.miasta:
             QMessageBox.critical(self, "Błąd", "Brak miast do połączenia. Dodaj miasta najpierw.")
             return
@@ -173,11 +178,15 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def wyczysc_miasta(self) -> None:
+        self.wyczysc_najlepsza_trase()
+
         self.drogi.clear()
         self.miasta.clear()
         self.rysuj_mape()
 
     def wyczysc_polaczenia(self) -> None:
+        self.wyczysc_najlepsza_trase()
+
         if not self.drogi:
             QMessageBox.critical(self, "Błąd", "Brak połączeń do wyczyszczenia.")
             return
@@ -186,6 +195,8 @@ class KomiwojazerApp(QWidget):
         self.rysuj_mape()
 
     def generuj_losowe_miasta(self) -> None:
+        self.wyczysc_najlepsza_trase()
+
         start_index = len(self.miasta) + 1
         for i in range(5):
             nazwa = f"Miasto{start_index + i}"
@@ -222,7 +233,7 @@ class KomiwojazerApp(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Błąd", f"Nie udało się wczytać stanu projektu: {str(e)}")
 
-    def rysuj_mape(self, najlepsza_trasa: Optional[list[str]] = None) -> None:
+    def rysuj_mape(self) -> None:
         self.ax.clear()
 
         wybrane_miasto = self.wybrane_miasto_input.text().strip()
@@ -239,8 +250,8 @@ class KomiwojazerApp(QWidget):
             x2, y2 = self.miasta[miasto2]
             self.ax.plot([x1, x2], [y1, y2], 'darkblue', linewidth=2)
 
-        if najlepsza_trasa:
-            wspolrzedne = [self.miasta[n] for n in najlepsza_trasa]
+        if self.najlepsza_trasa:
+            wspolrzedne = [self.miasta[n] for n in self.najlepsza_trasa]
             wspolrzedne.append(wspolrzedne[0])
             x_coords, y_coords = zip(*wspolrzedne)
             self.ax.plot(x_coords, y_coords, 'g-', linewidth=2)
@@ -258,4 +269,8 @@ class KomiwojazerApp(QWidget):
             QMessageBox.warning(self, "Uwaga", "Brak zapisanej trasy")
             return
         from algorytm import zapisz_trase_od_podanej_nazwy
-        zapisz_trase_od_podanej_nazwy(self, self.najlepsza_trasa, start)
+        zapisz_trase_od_podanej_nazwy(self, start)
+
+
+    def wyczysc_najlepsza_trase(self) -> None:
+        self.najlepsza_trasa = []
