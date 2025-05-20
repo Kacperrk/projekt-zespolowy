@@ -34,10 +34,9 @@ class KomiwojazerApp(QWidget):
         self.ax: Axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self.figure)
 
-
-        self.ostatnia_trasa: list[str] = []
         self.wybrane_miasto_input = QLineEdit()
 
+        self.najlepsza_trasa: list[str] = []
 
         self.init_ui()
 
@@ -255,8 +254,8 @@ class KomiwojazerApp(QWidget):
 
     def zapisz_wybrane(self) -> None:
         start = self.wybrane_miasto_input.text().strip()
-        if not self.ostatnia_trasa:
+        if not self.najlepsza_trasa:
             QMessageBox.warning(self, "Uwaga", "Brak zapisanej trasy")
             return
         from algorytm import zapisz_trase_od_podanej_nazwy
-        zapisz_trase_od_podanej_nazwy(self, self.ostatnia_trasa, start)
+        zapisz_trase_od_podanej_nazwy(self, self.najlepsza_trasa, start)
