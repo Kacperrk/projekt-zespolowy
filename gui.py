@@ -67,13 +67,13 @@ class KomiwojazerApp(QWidget):
 
 
         def make_button(text: str, handler, style: str = "") -> QPushButton:
-            btn = QPushButton(text)
-            btn.setStyleSheet(style)
-            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            btn.setMinimumHeight(30)
+            button = QPushButton(text)
+            button.setStyleSheet(style)
+            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            button.setMinimumHeight(30)
             # noinspection PyUnresolvedReferences
-            btn.clicked.connect(handler)
-            return btn
+            button.clicked.connect(handler)
+            return button
 
 
         controls.addWidget(make_button("Dodaj miasto", self.dodaj_miasto, "background-color: #4CAF50; color: white;"))

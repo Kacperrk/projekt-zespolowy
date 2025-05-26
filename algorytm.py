@@ -40,10 +40,10 @@ def zapisz_najlepsza_trase_do_pliku(self) -> None:
 def dystans(miasta: dict[str, tuple[float, float]], trasa: list[str]) -> float:
     dyst: float = 0.0
     for i in range(len(trasa)):
-        m1: str = trasa[i]
-        m2: str = trasa[(i + 1) % len(trasa)]
-        x1, y1 = miasta[m1]
-        x2, y2 = miasta[m2]
+        miasto1: str = trasa[i]
+        miasto2: str = trasa[(i + 1) % len(trasa)]
+        x1, y1 = miasta[miasto1]
+        x2, y2 = miasta[miasto2]
         dyst += math.hypot(x2 - x1, y2 - y1)
     return dyst
 
@@ -81,14 +81,12 @@ def znajdz_najlepsza_trase_genetyczny(self, pokolenia: int = 500, populacja_rozm
         obecny_dystans: float = dystans(self.miasta, nowa_populacja[0])
 
         if (abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans < 0.001:
-            print(f"obecny % stagnacji: {(abs(najlepszy_dystans - obecny_dystans)) / obecny_dystans}")
             stagnacja_licznik += 1
         else:
             stagnacja_licznik = 0
             najlepszy_dystans = obecny_dystans
 
         if stagnacja_licznik >= max_stagnacja:
-            print(f"\n\nZakończono po {epoka + 1} pokoleniach z powodu stabilności rozwiązania\n\n")
             break
 
         while len(nowa_populacja) < populacja_rozmiar:
