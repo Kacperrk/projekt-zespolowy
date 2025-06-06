@@ -24,16 +24,26 @@ class KomiwojazerApp(QWidget):
         self.drogi: list[tuple[str, str]] = []
 
         self.nazwa_input = QLineEdit()
+        self.nazwa_input.setPlaceholderText("np. Warszawa")
+
         self.x_input = QLineEdit()
+        self.x_input.setPlaceholderText("np. 12.34")
+
         self.y_input = QLineEdit()
+        self.y_input.setPlaceholderText("np. 56.78")
+
         self.miasto1_input = QLineEdit()
+        self.miasto1_input.setPlaceholderText("np. Warszawa")
+
         self.miasto2_input = QLineEdit()
+        self.miasto2_input.setPlaceholderText("np. Kraków")
+
+        self.wybrane_miasto_input = QLineEdit()
+        self.wybrane_miasto_input.setPlaceholderText("np. Warszawa")
 
         self.figure = Figure()
         self.ax: Axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self.figure)
-
-        self.wybrane_miasto_input = QLineEdit()
 
         self.najlepsza_trasa: list[str] = []
 
