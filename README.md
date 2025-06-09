@@ -20,7 +20,7 @@ source venv/bin/activate
 pip3 install --upgrade pip
 ```
 
-4. **Install requirements:**
+4. **Install the requirements:**
 
 ```
 pip3 install -r requirements.txt
